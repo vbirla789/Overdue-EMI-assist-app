@@ -56,7 +56,7 @@ export function Loading({ onDone, step: fixedStep }) {
   }, [step, fixedStep, onDone])
 
   return (
-    <div className="fx fx-loading">
+    <div className="fx fx-loading dotgrid">
       <StatusBar />
       <div className="fx-load-body">
         <div className="fx-load-orb-row">
@@ -104,7 +104,7 @@ export function Reschedule({ go }) {
   )
 
   return (
-    <div className="fx fx-resched">
+    <div className="fx fx-resched dotgrid">
       <StatusBar />
       <div className="fx-pad">
         <div className="fx-agent">
@@ -163,7 +163,7 @@ const THREAD = [
 
 export function Agent() {
   return (
-    <div className="fx fx-agent-screen">
+    <div className="fx fx-agent-screen dotgrid">
       <StatusBar />
       <div className="fx-pad">
         <div className="fx-agent">

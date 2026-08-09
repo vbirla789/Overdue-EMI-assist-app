@@ -79,7 +79,7 @@ function IntroCard({ o, go }) {
 export function Intro({ go, onBack }) {
   const [a, b, c] = INTRO_OPTIONS
   return (
-    <div className="in">
+    <div className="in dotgrid">
       <div className="in-header">
         <div className="in-status">
           <span className="in-time">9:41</span>

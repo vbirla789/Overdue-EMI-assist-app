@@ -369,6 +369,19 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fx-send img { width: 20px; height: 20px; }
 
+/* ==========================================================
+   Dot grid background · Figma 170:7402
+   3,000 ellipses in Figma; one CSS pattern here.
+   1.35px dots on an 11.35px grid.
+   ========================================================== */
+.dotgrid {
+  background-image: radial-gradient(circle at center, #e0e0e0 0.675px, transparent 0.7px);
+  background-size: 11.35px 11.35px;
+  background-position: 0 0;
+}
+.fx, .in { background-color: #f5f5f5; }
+.fx.dotgrid, .in.dotgrid { background-color: #f5f5f5; }
+
 /* ---------- workbench chrome ---------- */
 .wb { display: flex; min-height: 100vh; }
 .wb-side {
@@ -572,3 +585,35 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .input input { flex: 1; border: none; outline: none; font: inherit; font-size: 15px; height: 42px; background: none; }
 .input button { width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: #fff; flex: none; }
 .input button:disabled { background: var(--line); color: var(--ink-3); }
+
+/* ==========================================================
+   Phone / narrow browser — full-bleed, no mock chrome.
+   The real device draws its own status bar and home indicator.
+   ========================================================== */
+@media (max-width: 760px) {
+  body { overflow: hidden; }
+  .wb { display: block; }
+  .wb-side, .wb-note { display: none; }
+  .wb-main { padding: 0; gap: 0; display: block; }
+
+  .fx, .in, .fig, .phone {
+    width: 100vw; height: 100vh; height: 100dvh;
+    border-radius: 0; border: none; box-shadow: none;
+  }
+  .fig-overlay { width: 100%; height: 100%; }
+
+  /* mock iOS chrome off — the device provides the real thing */
+  .fx-status, .in-status, .status { display: none; }
+  .fx-homebar, .in-homebar, .fig-homebar { display: none; }
+
+  /* keep content clear of the notch and the home indicator */
+  .fx, .in { padding-top: env(safe-area-inset-top); }
+  .fx-loading { padding-top: calc(96px + env(safe-area-inset-top)); }
+  .fx-pad { padding-bottom: env(safe-area-inset-bottom); }
+  .in-body { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .fig-toast-pad { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  .fig-sheet-pad { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .footer { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+
+  .screen { padding-top: env(safe-area-inset-top); }
+}
