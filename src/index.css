@@ -219,11 +219,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fig-chevron.flip { transform: rotate(180deg); }
 
-.in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 0 16px; width: 100%; }
+.in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 0 16px; width: 100%; }
 .in-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+/* 177:107054 — the filled white disc and its shadow are gone; the sphere now
+   sits inside a transparent ring so the dot grid reads through behind it */
 .in-orb {
-  width: 120px; height: 120px; border-radius: 90px; background: #fff; padding: 1px;
-  overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none;
+  width: 128px; height: 128px; border-radius: 90px; padding: 4px;
+  border: 1px solid #e3e3e3; background: transparent;
+  overflow: hidden; flex: none;
 }
 .in-id { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .in-pill {
