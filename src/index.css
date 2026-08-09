@@ -489,9 +489,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fx-bubble.them { background: linear-gradient(180deg, #f5faff, #ebf4ff); }
 .fx-bubble.me { background: linear-gradient(180deg, #ffffff, #ededed); }
-/* message text sits at the app's body size and regular weight */
-.fx-msg { font-size: 14px; font-weight: 400; line-height: 1.45; letter-spacing: 0.25px; color: #000; }
-.fx-time-stamp { font-size: 12px; line-height: 1.4; letter-spacing: 0.25px; color: #818181; align-self: flex-end; }
+.fx-msg { font-size: 16px; font-weight: 400; line-height: 1.4; letter-spacing: 0.25px; color: #000; }
+.fx-time-stamp { font-size: 14px; line-height: 1.4; letter-spacing: 0.25px; color: #818181; align-self: flex-end; }
 
 .fx-composer {
   background: #fff; border-radius: 2px; width: 100%; display: flex; align-items: center;
