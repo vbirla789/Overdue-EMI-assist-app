@@ -57,3 +57,12 @@ export const orbIn = {
 
 /* press feedback on anything tappable */
 export const tap = { whileTap: { scale: 0.985 } }
+
+/* screens that pass the sphere between them cross-fade in place, so the
+   shared element is the only thing that appears to move */
+export const sharedFade = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.2, ease: EASE },
+}

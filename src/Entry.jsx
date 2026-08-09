@@ -102,8 +102,30 @@ function IntroCard({ o, go, stacked }) {
   )
 }
 
-export function Intro({ go, onBack }) {
-  const [a, b, c] = INTRO_OPTIONS
+/* Shared across the intro and the loading state. The orb carries a layoutId
+   so Framer treats it as one element travelling between screens — it holds
+   still from intro to loading, then shrinks into the reschedule header. */
+export function NiaHero({ animate = true }) {
+  return (
+    <motion.div className="in-hero">
+      <motion.div className="in-orb" layoutId="nia-orb" variants={animate ? orbIn : undefined}>
+        <img src={A.orb} alt="" />
+      </motion.div>
+      <motion.div className="in-id" layout>
+        <motion.span className="in-pill" variants={animate ? fadeItem : undefined}>Nia AI</motion.span>
+        <motion.div className="in-tooltip" variants={animate ? fadeItem : undefined}>
+          <img className="in-pointer" src={A.pointer} alt="" />
+          <div className="in-tip-body">
+            <span className="in-dot"><i /></span>
+            <span className="in-tip-text">Your installment is 3 days late</span>
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+export function IntroShell({ children, onBack, stagger: st }) {
   return (
     <div className="in dotgrid">
       <div className="in-header">
@@ -119,37 +141,31 @@ export function Intro({ go, onBack }) {
           <img className="fig-sep" src={A.separator2} alt="" />
         </div>
       </div>
-
-      <motion.div className="in-body" initial="initial" animate="animate" {...stagger(0.07, 0.08)}>
-        <motion.div className="in-hero">
-          <motion.div className="in-orb" variants={orbIn}><img src={A.orb} alt="" /></motion.div>
-          <motion.div className="in-id">
-            <motion.span className="in-pill" variants={fadeItem}>Nia AI</motion.span>
-            <motion.div className="in-tooltip" variants={fadeItem}>
-              <img className="in-pointer" src={A.pointer} alt="" />
-              <div className="in-tip-body">
-                <span className="in-dot"><i /></span>
-                <span className="in-tip-text">Your installment is 3 days late</span>
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-
-        <motion.div className="in-main">
-          <motion.p className="in-title" variants={riseItem}>Three ways to clear this</motion.p>
-          <motion.div className="in-options">
-            <motion.div className="in-options-group">
-              <IntroCard o={a} go={go} stacked />
-              <IntroCard o={b} go={go} stacked />
-            </motion.div>
-            <motion.img className="fig-sep" src={A.separator2} alt="" variants={fadeItem} />
-            <IntroCard o={c} go={go} />
-          </motion.div>
-        </motion.div>
+      <motion.div className="in-body" initial="initial" animate="animate" {...st}>
+        {children}
       </motion.div>
-
       <div className="in-homebar"><i /></div>
     </div>
+  )
+}
+
+export function Intro({ go, onBack }) {
+  const [a, b, c] = INTRO_OPTIONS
+  return (
+    <IntroShell onBack={onBack} stagger={stagger(0.07, 0.08)}>
+      <NiaHero />
+      <motion.div className="in-main" layout>
+        <motion.p className="in-title" variants={riseItem}>Three ways to clear this</motion.p>
+        <motion.div className="in-options">
+          <motion.div className="in-options-group">
+            <IntroCard o={a} go={go} stacked />
+            <IntroCard o={b} go={go} stacked />
+          </motion.div>
+          <motion.img className="fig-sep" src={A.separator2} alt="" variants={fadeItem} />
+          <IntroCard o={c} go={go} />
+        </motion.div>
+      </motion.div>
+    </IntroShell>
   )
 }
 

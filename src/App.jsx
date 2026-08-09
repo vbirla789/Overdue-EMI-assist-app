@@ -1,6 +1,10 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { screenSlide } from './motion'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
+import { screenSlide, sharedFade } from './motion'
+
+/* these three hand the sphere between them, so they share one presence key
+   and Framer animates the orb instead of swapping whole screens */
+const SHARED = new Set(['intro', 'loading', 'resched'])
 import Part1 from './Part1'
 import Part2 from './Part2'
 import { Toast, Sheet, Intro } from './Entry'
@@ -48,7 +52,7 @@ const NAV = [
 const NOTES = {
   'toast': 'Built 1:1 from Figma (175:73758). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. Close sits first because a user who is not ready to deal with it should not have to hunt for the way out.',
   'intro': 'Built 1:1 from Figma (185:173518). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
-  'loading': 'Built 1:1 from Figma (168:3813–168:3922). Each check resolves in turn — a pulsing dot becomes a tick and the finding appears underneath. The rail ties them into one sequence, so it reads as work being done rather than three separate spinners.',
+  'loading': 'Built 1:1 from Figma (187:184623). The hero does not move — the sphere is literally the same element as on the intro, so only the lower half changes and the assistant never appears to restart. When the checks finish it shrinks into the reschedule header.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
   'resched': 'Built 1:1 from Figma (185:162423). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
   'success': 'Built 1:1 from Figma (180:118152). The mark lands first with a little weight, then the copy, then the receipt — so the relief arrives before the detail. Late fee ₹0 is the line that matters most to someone who was late.',
@@ -105,13 +109,14 @@ export default function App() {
       </aside>
 
       <main className="wb-main">
-        <AnimatePresence mode="wait">
-          <motion.div className="wb-stage" key={screen} {...screenSlide}>
+        <LayoutGroup>
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div className="wb-stage" key={SHARED.has(screen) ? 'shared' : screen} {...(SHARED.has(screen) ? sharedFade : screenSlide)}>
             {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
               : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
-              : screen === 'loading' ? <Loading key="run" onDone={() => setScreen('resched')} />
-              : screen === 'loading:3' ? <Loading key="done" step={3} />
-              : screen === 'resched' ? <Reschedule go={go} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />
+              : screen === 'loading' ? <Loading key="run" onBack={() => setScreen('intro')} onDone={() => setScreen('resched')} />
+              : screen === 'loading:3' ? <Loading key="done" step={3} onBack={() => setScreen('intro')} />
+              : screen === 'resched' ? <Reschedule go={go} onClose={() => setScreen('intro')} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />
               : screen === 'agent' ? <Agent onClose={() => setScreen('toast')} />
               : screen === 'success' ? <Success onClose={() => setScreen('toast')} />
               : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('toast')} />
@@ -121,6 +126,7 @@ export default function App() {
                 : <Part1 screen={screen} go={go} />}
           </motion.div>
         </AnimatePresence>
+        </LayoutGroup>
         {NOTES[screen] && <div className="wb-note"><b>Why this way — </b>{NOTES[screen]}</div>}
       </main>
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { stagger, riseItem, fadeItem, orbIn, tap, EASE } from './motion'
+import { IntroShell, NiaHero } from './Entry'
 
 /* Part 1 screens, built 1:1 from Figma
    unBox-benchmarking · section 169:7315
@@ -44,30 +45,31 @@ const CHECKS = [
   { t: 'CIBIL report', d: 'Nothing reported yet' },
 ]
 
-export function Loading({ onDone, step: fixedStep }) {
+export function Loading({ onDone, step: fixedStep, onBack }) {
   const [step, setStep] = useState(fixedStep ?? 0)
-  const fired = useRef(false)
+  /* held in a ref so a new callback identity from the parent doesn't restart
+     the sequence, and so the effect needs no once-only guard — a guard plus
+     StrictMode's double-invoke silently swallowed the final timer. */
+  const done = useRef(onDone)
+  done.current = onDone
 
   useEffect(() => {
     if (fixedStep !== undefined) return
     if (step > CHECKS.length) {
-      if (fired.current) return
-      fired.current = true
-      const t = setTimeout(() => onDone?.(), 600)
+      const t = setTimeout(() => done.current?.(), 600)
       return () => clearTimeout(t)
     }
     const t = setTimeout(() => setStep((s) => s + 1), step === 0 ? 500 : 1150)
     return () => clearTimeout(t)
-  }, [step, fixedStep, onDone])
+  }, [step, fixedStep])
 
   return (
-    <div className="fx fx-loading dotgrid">
-      <StatusBar />
-      <motion.div className="fx-load-body" initial="initial" animate="animate" {...stagger(0.1, 0.05)}>
-        <motion.div className="fx-load-orb-row">
-          <motion.div className="fx-orb-96" variants={orbIn}><img src={F.orb} alt="" /></motion.div>
-        </motion.div>
-        <motion.div className="fx-checks" variants={fadeItem}>
+    <IntroShell onBack={onBack} stagger={stagger(0.08, 0.05)}>
+      <NiaHero animate={false} />
+      <motion.div className="fx-checks" layout
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.32, ease: EASE, delay: 0.06 }}
+      >
           <img className="fx-rail" src={F.rail} alt="" />
           <div className="fx-check-list">
             {CHECKS.map((c, i) => {
@@ -103,11 +105,9 @@ export function Loading({ onDone, step: fixedStep }) {
                 </div>
               )
             })}
-          </div>
-        </motion.div>
+        </div>
       </motion.div>
-      <HomeBar />
-    </div>
+    </IntroShell>
   )
 }
 
@@ -211,7 +211,7 @@ function Cell({ day, sel, setSel }) {
   )
 }
 
-export function Reschedule({ go, onPick }) {
+export function Reschedule({ go, onPick, onClose }) {
   const [sel, setSel] = useState(null)
   /* hold on the selected state briefly so the choice is visibly registered
      before the screen changes — otherwise the tap feels unacknowledged */
@@ -231,12 +231,17 @@ export function Reschedule({ go, onPick }) {
           initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: EASE }}
         >
-          <div className="fx-agent-row">
-            <div className="fx-orb-40"><img src={F.orb} alt="" /></div>
-            <div className="fx-agent-name">
-              <span className="fx-title-16">Nia AI</span>
-              <span className="fx-sub-14">Move the date</span>
+          <div className="fx-agent-head">
+            <div className="fx-agent-row">
+              <motion.div className="fx-orb-40" layoutId="nia-orb"><img src={F.orb} alt="" /></motion.div>
+              <div className="fx-agent-name">
+                <span className="fx-title-16">Nia AI</span>
+                <span className="fx-sub-14">Move the date</span>
+              </div>
             </div>
+            <motion.button className="fx-close" onClick={onClose} aria-label="Close" {...tap}>
+              <span className="fx-cross"><img src={F.cross} alt="" /></span>
+            </motion.button>
           </div>
           <img className="fx-sep" src={F.sepDashed} alt="" />
         </motion.div>
