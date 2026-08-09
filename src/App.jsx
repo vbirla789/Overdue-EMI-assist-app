@@ -1,14 +1,23 @@
 import { useState } from 'react'
 import Part1 from './Part1'
 import Part2 from './Part2'
+import { Toast, Sheet, Intro } from './Entry'
+import { Loading, Reschedule, Agent } from './Flow'
 
 const NAV = [
   {
     label: 'Part 1 — assistant flow',
     items: [
-      ['intent', 'Intent / proposal', 'What Assist can do, before anything happens'],
-      ['check:reschedule', 'Streaming — reschedule', 'Named checks, real findings'],
-      ['adjust', 'Pick a date', 'User chooses; the 5-day limit is visible'],
+      ['toast', 'Toast', 'From Figma — the trigger, over the app'],
+      ['intro', 'Intro screen', 'From Figma — full screen, live sphere'],
+      ['loading', 'Loading — running', 'From Figma — checks resolve one by one'],
+      ['loading:3', 'Loading — all done', 'From Figma — final state'],
+      ['resched', 'Reschedule date', 'From Figma — user picks, nothing preselected'],
+      ['agent', 'Your agent', 'From Figma — handoff as a chat thread'],
+      ['sheet', 'Options sheet', 'From Figma — earlier sheet version'],
+      ['intent', 'Intent / proposal', 'Earlier version, kept for reference'],
+      ['check:reschedule', 'Streaming — reschedule', 'Earlier streaming version'],
+      ['adjust', 'Pick a date', 'Earlier picker version'],
       ['done', 'Rescheduled', 'Confirmed outcome'],
       ['check:pause', 'Streaming — hardship pause', 'A check that ends in escalation'],
       ['escalate:pause', 'Escalation — pause', 'Handoff to a person'],
@@ -33,6 +42,13 @@ const NAV = [
 ]
 
 const NOTES = {
+  'toast': 'Built 1:1 from Figma (163:3264). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. “See options” promises choice rather than a statement.',
+  'intro': 'Built 1:1 from Figma (166:3429). The sphere is a live canvas, not a still — it breathes and drifts so the assistant reads as present rather than pictured. The status pill sits on the assistant, not the headline, so identity and situation stay separate.',
+  'loading': 'Built 1:1 from Figma (168:3813–168:3922). Each check resolves in turn — a pulsing dot becomes a tick and the finding appears underneath. The rail ties them into one sequence, so it reads as work being done rather than three separate spinners.',
+  'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
+  'resched': 'Built 1:1 from Figma (168:4190). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
+  'agent': 'Built 1:1 from Figma (169:7234). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
+  'sheet': 'Built 1:1 from Figma (163:3278). The amount stays in the header, so the number never moves between toast and sheet. The RM option sits below a rule — it is a different kind of thing, and the layout says so before the copy does.',
   'intent': 'One line of problem, three options, one escape. The options are exactly what the assistant is allowed to do — and option 3 says “goes to a person” up front, so escalation is never a surprise.',
   'check:reschedule': 'Not a spinner. Named checks, real answers, and the offer is visibly built from them. The last check states the 5-day ceiling before anything is promised.',
   'adjust': 'The assistant never picks for you — it offers the range and says why it stops there. Nothing is selected on arrival, so the CTA can’t be tapped by accident. The 5-day rule is a meter, not an error after the fact, and going past it is an offer rather than a wall.',
@@ -53,7 +69,7 @@ const NOTES = {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState('intent')
+  const [screen, setScreen] = useState('toast')
 
   const go = (s) => {
     if (s === 'home') return setScreen('p2:success')
@@ -82,9 +98,16 @@ export default function App() {
       </aside>
 
       <main className="wb-main">
-        {isP2
-          ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
-          : <Part1 screen={screen} go={go} />}
+        {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
+          : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
+          : screen === 'loading' ? <Loading onDone={() => setScreen('resched')} />
+          : screen === 'loading:3' ? <Loading step={3} />
+          : screen === 'resched' ? <Reschedule go={go} />
+          : screen === 'agent' ? <Agent />
+          : screen === 'sheet' ? <Sheet go={go} />
+          : isP2
+            ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
+            : <Part1 screen={screen} go={go} />}
         {NOTES[screen] && <div className="wb-note"><b>Why this way — </b>{NOTES[screen]}</div>}
       </main>
     </div>
