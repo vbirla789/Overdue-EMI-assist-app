@@ -223,13 +223,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 
 .in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 0 16px; width: 100%; }
 .in-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-/* 177:107054 — the filled white disc and its shadow are gone; the sphere now
-   sits inside a transparent ring so the dot grid reads through behind it */
-.in-orb {
-  width: 128px; height: 128px; border-radius: 90px; padding: 4px;
-  border: 1px solid #e3e3e3; background: transparent;
-  overflow: hidden; flex: none;
-}
+/* 177:107054 — sizing only; the ring itself is defined once further down */
+.in-orb { width: 128px; height: 128px; padding: 4px; }
 .in-id { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .in-pill {
   border: 1px solid #e3e3e3; border-radius: 20px; padding: 6px 16px;
@@ -326,14 +321,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fx-sep { width: 100%; height: 1.17px; display: block; }
 
-.fx-orb-96 {
-  width: 120px; height: 120px; border-radius: 90px; background: #fff; padding: 1px;
-  overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none;
+/* One ring treatment for every sphere — transparent inside a hairline circle,
+   so the dot grid reads through. Kept together so they can't drift apart. */
+.in-orb, .fx-orb-96, .fx-orb-40 {
+  border-radius: 90px; border: 1px solid #e3e3e3; background: transparent;
+  overflow: hidden; flex: none;
 }
-.fx-orb-40 {
-  width: 40px; height: 40px; border-radius: 90px; background: #fff; padding: 1px;
-  overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none;
-}
+.fx-orb-96 { width: 128px; height: 128px; padding: 4px; }
+.fx-orb-40 { width: 40px; height: 40px; padding: 2px; }
 
 /* ---- loading (168:3922) ---- */
 /* Figma pads the frame 160px but keeps the status bar pinned to the top,
