@@ -217,7 +217,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   width: 40px; height: 40px; flex: none; background: #fff; border: 1px solid #ebebeb;
   border-radius: 20px; display: flex; align-items: center; justify-content: center;
 }
+/* the exported chevron is grey; the back control reads as black */
 .fig-chevron.flip { transform: rotate(180deg); }
+.in-back .fig-chevron img { filter: brightness(0); }
 
 .in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 0 16px; width: 100%; }
 .in-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -240,22 +242,23 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.06));
 }
 .in-pointer { width: 44px; height: 6px; display: block; margin-bottom: -0.5px; }
+/* 177:107059 — late state: amber, and the body radius drops to 4px */
 .in-tip-body {
-  background: #fff; border-radius: 42px; padding: 8px 12px 8px 10px;
-  display: flex; align-items: center; gap: 6px;
+  background: #fff; border-radius: 4px; padding: 8px 12px 8px 10px;
+  display: flex; align-items: center; gap: 4px;
 }
 .in-dot {
   width: 16px; height: 16px; flex: none; display: flex; align-items: center; justify-content: center;
 }
 .in-dot i {
-  width: 12px; height: 12px; border-radius: 999px; background: rgba(59, 130, 246, 0.3);
+  width: 12px; height: 12px; border-radius: 999px; background: rgba(224, 105, 0, 0.3);
   display: flex; align-items: center; justify-content: center; position: relative;
 }
 .in-dot i::after {
-  content: ''; width: 8px; height: 8px; border-radius: 999px; background: #3b82f6;
+  content: ''; width: 8px; height: 8px; border-radius: 999px; background: #e06900;
   box-shadow: inset 0 2.578px 0 0 rgba(255, 255, 255, 0.35);
 }
-.in-tip-text { font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.25px; color: #0a59ff; white-space: nowrap; }
+.in-tip-text { font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.25px; color: #e06900; white-space: nowrap; }
 
 .in-main { display: flex; flex-direction: column; gap: 24px; width: 100%; }
 .in-title {

@@ -129,7 +129,7 @@ export function Intro({ go, onBack }) {
               <img className="in-pointer" src={A.pointer} alt="" />
               <div className="in-tip-body">
                 <span className="in-dot"><i /></span>
-                <span className="in-tip-text">Your installment is on time</span>
+                <span className="in-tip-text">Your installment is 3 days late</span>
               </div>
             </motion.div>
           </motion.div>

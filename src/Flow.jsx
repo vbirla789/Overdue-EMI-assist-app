@@ -176,9 +176,11 @@ const DAYS = [
   { d: 13, w: 'Wednesday' },
 ]
 
-export function Reschedule({ go }) {
-  const [sel, setSel] = useState(null)
-  const Cell = ({ day }) => (
+/* Defined outside Reschedule on purpose. Declaring it inside makes React see
+   a brand-new component type on every render, so selecting a date remounted
+   all five cells and replayed their enter animation. */
+function Cell({ day, sel, setSel }) {
+  return (
     <motion.button
       className={`fx-day ${sel === day.d ? 'on' : ''}`}
       onClick={() => setSel(day.d)}
@@ -189,6 +191,11 @@ export function Reschedule({ go }) {
       <span className="fx-day-w">{day.w}</span>
     </motion.button>
   )
+}
+
+export function Reschedule({ go }) {
+  const [sel, setSel] = useState(null)
+  const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={setSel} />
 
   return (
     <div className="fx fx-resched dotgrid">
@@ -215,9 +222,9 @@ export function Reschedule({ go }) {
               <motion.img className="fx-cal" src={F.calBig} alt="" variants={orbIn} />
               <motion.p className="fx-title-24" variants={riseItem}>Which day works?</motion.p>
               <motion.div className="fx-days">
-                <motion.div className="fx-day-row"><Cell day={DAYS[0]} /><Cell day={DAYS[1]} /></motion.div>
-                <motion.div className="fx-day-row"><Cell day={DAYS[2]} /><Cell day={DAYS[3]} /></motion.div>
-                <motion.div className="fx-day-row single"><Cell day={DAYS[4]} /></motion.div>
+                <motion.div className="fx-day-row">{cell(0)}{cell(1)}</motion.div>
+                <motion.div className="fx-day-row">{cell(2)}{cell(3)}</motion.div>
+                <motion.div className="fx-day-row single">{cell(4)}</motion.div>
               </motion.div>
             </motion.div>
 
