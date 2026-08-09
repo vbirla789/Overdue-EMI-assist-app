@@ -20,6 +20,9 @@ const F = {
   sepChat: '/figma/sep-chat.svg',
   send: '/figma/send.svg',
   orb: '/figma/orb.png',
+  tickHero: '/figma/success-tick.svg',
+  sepRow: '/figma/sep-row.svg',
+  cross: '/figma/cross.svg',
 }
 
 function StatusBar() {
@@ -103,6 +106,64 @@ export function Loading({ onDone, step: fixedStep }) {
           </div>
         </motion.div>
       </motion.div>
+      <HomeBar />
+    </div>
+  )
+}
+
+/* ---------- Payment success · 180:118152 ---------- */
+export function Success({ onClose }) {
+  const EASE_OUT = [0.22, 0.61, 0.36, 1]
+  return (
+    <div className="fx fx-success dotgrid">
+      <StatusBar />
+      <div className="fx-succ-nav">
+        <motion.button className="fx-close" onClick={onClose} aria-label="Close" {...tap}>
+          <span className="fx-cross"><img src={F.cross} alt="" /></span>
+        </motion.button>
+      </div>
+
+      <div className="fx-succ-body">
+        <motion.div className="fx-succ-top" initial="initial" animate="animate" {...stagger(0.09, 0.12)}>
+          <motion.div className="fx-succ-hero" variants={fadeItem}>
+            {/* the mark lands with a little weight, then the copy follows */}
+            <motion.img
+              className="fx-succ-tick" src={F.tickHero} alt=""
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.55, ease: [0.16, 1.2, 0.4, 1], delay: 0.08 }}
+            />
+            <motion.div className="fx-succ-text" variants={riseItem}>
+              <p className="fx-succ-title">₹45,000 paid. You’re all clear.</p>
+              <p className="fx-succ-sub">Nothing else is due this month</p>
+            </motion.div>
+          </motion.div>
+
+          <motion.div className="fx-succ-card" variants={riseItem}>
+            <p className="fx-title-16">Transaction Details</p>
+            <div className="fx-succ-rows">
+              <div className="fx-succ-row">
+                <span className="fx-succ-k">Late fee</span>
+                <span className="fx-succ-v good">₹0</span>
+              </div>
+              <img className="fx-sep" src={F.sepRow} alt="" />
+              <div className="fx-succ-row">
+                <span className="fx-succ-k">Next EMI</span>
+                <span className="fx-succ-v">5 September, 2026</span>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.button
+          className="fx-succ-cta" onClick={onClose}
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.34, ease: EASE_OUT, delay: 0.5 }}
+          whileTap={{ scale: 0.985 }}
+        >
+          Done
+        </motion.button>
+      </div>
       <HomeBar />
     </div>
   )

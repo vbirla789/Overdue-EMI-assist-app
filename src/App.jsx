@@ -4,7 +4,7 @@ import { screenSlide } from './motion'
 import Part1 from './Part1'
 import Part2 from './Part2'
 import { Toast, Sheet, Intro } from './Entry'
-import { Loading, Reschedule, Agent } from './Flow'
+import { Loading, Reschedule, Agent, Success } from './Flow'
 
 const NAV = [
   {
@@ -16,6 +16,7 @@ const NAV = [
       ['loading:3', 'Loading — all done', 'From Figma — final state'],
       ['resched', 'Reschedule date', 'From Figma — user picks, nothing preselected'],
       ['agent', 'Your agent', 'From Figma — handoff as a chat thread'],
+      ['success', 'Payment success', 'From Figma — the pay-now outcome'],
       ['sheet', 'Options sheet', 'From Figma — earlier sheet version'],
       ['intent', 'Intent / proposal', 'Earlier version, kept for reference'],
       ['check:reschedule', 'Streaming — reschedule', 'Earlier streaming version'],
@@ -49,6 +50,7 @@ const NOTES = {
   'loading': 'Built 1:1 from Figma (168:3813–168:3922). Each check resolves in turn — a pulsing dot becomes a tick and the finding appears underneath. The rail ties them into one sequence, so it reads as work being done rather than three separate spinners.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
   'resched': 'Built 1:1 from Figma (168:4190). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
+  'success': 'Built 1:1 from Figma (180:118152). The mark lands first with a little weight, then the copy, then the receipt — so the relief arrives before the detail. Late fee ₹0 is the line that matters most to someone who was late.',
   'agent': 'Built 1:1 from Figma (169:7234). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
   'sheet': 'Built 1:1 from Figma (163:3278). The amount stays in the header, so the number never moves between toast and sheet. The RM option sits below a rule — it is a different kind of thing, and the layout says so before the copy does.',
   'intent': 'One line of problem, three options, one escape. The options are exactly what the assistant is allowed to do — and option 3 says “goes to a person” up front, so escalation is never a surprise.',
@@ -108,6 +110,7 @@ export default function App() {
               : screen === 'loading:3' ? <Loading key="done" step={3} />
               : screen === 'resched' ? <Reschedule go={go} />
               : screen === 'agent' ? <Agent />
+              : screen === 'success' ? <Success onClose={() => setScreen('toast')} />
               : screen === 'sheet' ? <Sheet go={go} />
               : isP2
                 ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />

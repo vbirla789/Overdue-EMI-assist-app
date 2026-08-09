@@ -66,7 +66,7 @@ export function Toast({ onOpen }) {
 
 /* ---------- 166:3429 — full-screen intro ---------- */
 const INTRO_OPTIONS = [
-  { icon: A.iPay, t: 'Pay ₹45,000', d: 'Clears this month. No late fee.', go: 'paid' },
+  { icon: A.iPay, t: 'Pay ₹45,000', d: 'Clears this month. No late fee.', go: 'success' },
   { icon: A.iDate, t: 'Move the date', d: 'Up to 5 days. Still no late fee.', go: 'loading' },
   { icon: A.iRm, t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'agent' },
 ]

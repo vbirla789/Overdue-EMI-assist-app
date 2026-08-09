@@ -384,6 +384,57 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-check .fx-title-16 { transition: color .3s ease; }
 .fx-check-text { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; word-break: break-word; }
 
+/* ---- payment success (180:118152) ---- */
+.fx-succ-nav { padding: 12px 16px; flex: none; }
+.fx-close {
+  width: 40px; height: 40px; background: #fff; border: 1px solid #ebebeb;
+  border-radius: 20px; display: flex; align-items: center; justify-content: center;
+}
+.fx-cross { width: 20px; height: 20px; position: relative; overflow: hidden; display: block; }
+.fx-cross img { position: absolute; inset: 26.04%; width: 47.92%; height: 47.92%; }
+
+.fx-success .fx-succ-body {
+  flex: 1 0 0; min-height: 0; display: flex; flex-direction: column;
+  justify-content: space-between; padding: 24px 16px 32px; width: 100%;
+}
+.fx-succ-top { display: flex; flex-direction: column; gap: 32px; width: 100%; }
+.fx-succ-hero { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+.fx-succ-tick { width: 167px; height: 120px; display: block; }
+.fx-succ-text { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.fx-succ-title {
+  font-family: 'Rupee', 'Kalice Trial', Georgia, serif; font-weight: 700;
+  font-size: 24px; line-height: 1.4; letter-spacing: 0.25px; color: #000; width: 249px;
+}
+.fx-succ-sub {
+  font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.4;
+  letter-spacing: 0.25px; color: #818181; white-space: nowrap;
+}
+
+.fx-succ-card {
+  background: #fff; border-radius: 4px; padding: 20px; width: 100%;
+  display: flex; flex-direction: column; gap: 32px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.fx-succ-rows { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+.fx-succ-row { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+.fx-succ-k {
+  font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.4;
+  letter-spacing: 0.25px; color: #818181; white-space: nowrap;
+}
+.fx-succ-v {
+  font-family: 'Rupee', 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+  line-height: 1.4; letter-spacing: 0.25px; color: #000; white-space: nowrap;
+}
+.fx-succ-v.good { color: #108e5b; }
+
+.fx-succ-cta {
+  width: 100%; height: 52px; background: #000; border: 1px solid #8f8f8f;
+  border-radius: 2px; color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.25px;
+  display: flex; align-items: center; justify-content: center; flex: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
 /* ---- reschedule (168:4190) ---- */
 .fx-pad { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 20px 0; width: 100%; }
 .fx-agent { display: flex; flex-direction: column; gap: 12px; justify-content: center; width: 100%; flex: none; }
