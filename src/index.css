@@ -443,13 +443,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 /* ---- reschedule (168:4190) ---- */
 .fx-pad { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 20px 0; width: 100%; }
 .fx-agent { display: flex; flex-direction: column; gap: 12px; justify-content: center; width: 100%; flex: none; }
+.fx-agent-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .fx-agent-row { display: flex; gap: 12px; align-items: center; }
 .fx-agent-name { display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
 .fx-avatar { width: 40px; height: 40px; border-radius: 90px; background: #fff; padding: 1px; overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none; }
 .fx-avatar img { width: 100%; height: 100%; border-radius: 999px; object-fit: cover; display: block; }
 
 .fx-resched-body { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 32px; width: 100%; margin-top: 48px; }
-.fx-resched-top { display: flex; flex-direction: column; gap: 48px; align-items: center; width: 100%; }
+.fx-resched-top { display: flex; flex-direction: column; gap: 60px; align-items: center; width: 100%; }
 .fx-pick { display: flex; flex-direction: column; gap: 24px; align-items: center; width: 100%; }
 .fx-cal { width: 80px; height: 80px; flex: none; }
 .fx-days { display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; width: 100%; }
@@ -484,7 +485,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 /* ---- agent chat (169:7234) ---- */
 .fx-chat { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 32px; width: 100%; margin-top: 24px; }
 .fx-thread { display: flex; flex-direction: column; gap: 24px; width: 100%; }
-.fx-msg-group { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+.fx-msg-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
 .fx-msg-out { display: flex; flex-direction: column; align-items: flex-end; width: 100%; }
 .fx-bubble {
   width: 287px; padding: 12px; border-radius: 12px 12px 12px 0;
@@ -741,7 +742,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
    The real device draws its own status bar and home indicator.
    ========================================================== */
 @media (max-width: 760px) {
-  body { overflow: hidden; }
+  body { overflow-x: hidden; }
   .wb { display: block; }
   .wb-side, .wb-note { display: none; }
   .wb-main { padding: 0; gap: 0; display: block; }
@@ -751,6 +752,13 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
     border-radius: 0; border: none; box-shadow: none;
   }
   .fig-overlay { width: 100%; height: 100%; }
+
+  /* On a short handset the taller screens would clip. Let them grow past the
+     viewport and scroll instead of hiding what falls off the bottom. */
+  .fx, .in {
+    height: auto; min-height: 100vh; min-height: 100dvh; overflow: visible;
+  }
+  .wb-stage { display: block; }
 
   /* mock iOS chrome off — the device provides the real thing */
   .fx-status, .in-status, .status { display: none; }

@@ -53,7 +53,7 @@ const NOTES = {
   'resched': 'Built 1:1 from Figma (168:4190). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
   'success': 'Built 1:1 from Figma (180:118152). The mark lands first with a little weight, then the copy, then the receipt — so the relief arrives before the detail. Late fee ₹0 is the line that matters most to someone who was late.',
   'moved': 'Built 1:1 from Figma (183:129204). Same shell as the paid outcome, different truth — the EMI is still owed, just later, so the subline confirms the lateness has stopped rather than claiming nothing is due. The date comes from whichever day the user picked.',
-  'agent': 'Built 1:1 from Figma (169:7234). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
+  'agent': 'Built 1:1 from Figma (184:151339). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
   'sheet': 'Built 1:1 from Figma (163:3278). The amount stays in the header, so the number never moves between toast and sheet. The RM option sits below a rule — it is a different kind of thing, and the layout says so before the copy does.',
   'intent': 'One line of problem, three options, one escape. The options are exactly what the assistant is allowed to do — and option 3 says “goes to a person” up front, so escalation is never a surprise.',
   'check:reschedule': 'Not a spinner. Named checks, real answers, and the offer is visibly built from them. The last check states the 5-day ceiling before anything is promised.',
@@ -112,7 +112,7 @@ export default function App() {
               : screen === 'loading' ? <Loading key="run" onDone={() => setScreen('resched')} />
               : screen === 'loading:3' ? <Loading key="done" step={3} />
               : screen === 'resched' ? <Reschedule go={go} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />
-              : screen === 'agent' ? <Agent />
+              : screen === 'agent' ? <Agent onClose={() => setScreen('toast')} />
               : screen === 'success' ? <Success onClose={() => setScreen('toast')} />
               : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('toast')} />
               : screen === 'sheet' ? <Sheet go={go} />

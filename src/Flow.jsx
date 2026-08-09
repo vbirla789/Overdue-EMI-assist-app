@@ -284,7 +284,7 @@ const THREAD = [
   { from: 'me', text: 'I need your help to extend this for month', time: '7:56 PM' },
 ]
 
-export function Agent() {
+export function Agent({ onClose }) {
   return (
     <div className="fx fx-agent-screen dotgrid">
       <StatusBar />
@@ -294,12 +294,17 @@ export function Agent() {
           initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: EASE }}
         >
-          <div className="fx-agent-row">
-            <div className="fx-avatar"><img src={F.avatar} alt="" /></div>
-            <div className="fx-agent-name">
-              <span className="fx-title-16">Ayush Sehgal</span>
-              <span className="fx-sub-14">Relationship manager · online</span>
+          <div className="fx-agent-head">
+            <div className="fx-agent-row">
+              <div className="fx-avatar"><img src={F.avatar} alt="" /></div>
+              <div className="fx-agent-name">
+                <span className="fx-title-16">Ayush Sehgal (RM)</span>
+                <span className="fx-sub-14">online</span>
+              </div>
             </div>
+            <motion.button className="fx-close" onClick={onClose} aria-label="Close" {...tap}>
+              <span className="fx-cross"><img src={F.cross} alt="" /></span>
+            </motion.button>
           </div>
           <img className="fx-sep" src={F.sepChat} alt="" />
         </motion.div>
