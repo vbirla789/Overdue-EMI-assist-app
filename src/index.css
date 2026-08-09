@@ -408,6 +408,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   font-family: 'Rupee', 'Kalice Trial', Georgia, serif; font-weight: 700;
   font-size: 24px; line-height: 1.4; letter-spacing: 0.25px; color: #000; width: 249px;
 }
+/* the moved headline is one line, so it gets the full content width */
+.fx-succ-title.wide { width: 343px; }
 .fx-succ-sub {
   font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.4;
   letter-spacing: 0.25px; color: #818181; white-space: nowrap;

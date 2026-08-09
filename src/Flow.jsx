@@ -111,9 +111,25 @@ export function Loading({ onDone, step: fixedStep }) {
   )
 }
 
-/* ---------- Payment success · 180:118152 ---------- */
-export function Success({ onClose }) {
+/* ---------- Success · 180:118152 (paid) and 183:129204 (moved) ----------
+   Same shell, two outcomes. `moved` carries the date the user picked, so the
+   headline and the receipt always agree with the choice they made. */
+export function Success({ onClose, moved }) {
   const EASE_OUT = [0.22, 0.61, 0.36, 1]
+
+  const title = moved ? `EMI moved to ${moved.label}` : '₹45,000 paid. You’re all clear.'
+  const sub = moved ? 'Nothing is overdue any more' : 'Nothing else is due this month'
+  const rows = moved
+    ? [
+        ['Due amount', '₹45,000', false],
+        ['New due date', `${moved.label}, 2026`, false],
+        ['Late fee', '₹0', true],
+      ]
+    : [
+        ['Late fee', '₹0', true],
+        ['Next EMI', '5 September, 2026', false],
+      ]
+
   return (
     <div className="fx fx-success dotgrid">
       <StatusBar />
@@ -134,23 +150,23 @@ export function Success({ onClose }) {
               transition={{ duration: 0.55, ease: [0.16, 1.2, 0.4, 1], delay: 0.08 }}
             />
             <motion.div className="fx-succ-text" variants={riseItem}>
-              <p className="fx-succ-title">₹45,000 paid. You’re all clear.</p>
-              <p className="fx-succ-sub">Nothing else is due this month</p>
+              <p className={`fx-succ-title ${moved ? 'wide' : ''}`}>{title}</p>
+              <p className="fx-succ-sub">{sub}</p>
             </motion.div>
           </motion.div>
 
           <motion.div className="fx-succ-card" variants={riseItem}>
             <p className="fx-title-16">Transaction Details</p>
             <div className="fx-succ-rows">
-              <div className="fx-succ-row">
-                <span className="fx-succ-k">Late fee</span>
-                <span className="fx-succ-v good">₹0</span>
-              </div>
-              <img className="fx-sep" src={F.sepRow} alt="" />
-              <div className="fx-succ-row">
-                <span className="fx-succ-k">Next EMI</span>
-                <span className="fx-succ-v">5 September, 2026</span>
-              </div>
+              {rows.map(([k, v, good], i) => (
+                <div key={k} style={{ display: 'contents' }}>
+                  {i > 0 && <img className="fx-sep" src={F.sepRow} alt="" />}
+                  <div className="fx-succ-row">
+                    <span className="fx-succ-k">{k}</span>
+                    <span className={`fx-succ-v ${good ? 'good' : ''}`}>{v}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </motion.div>
         </motion.div>
@@ -171,9 +187,11 @@ export function Success({ onClose }) {
 
 /* ---------- Reschedule date · 168:4190 ---------- */
 const DAYS = [
-  { d: 9, w: 'Saturday' }, { d: 10, w: 'Sunday' },
-  { d: 11, w: 'Monday' }, { d: 12, w: 'Tuesday' },
-  { d: 13, w: 'Wednesday' },
+  { d: 9, w: 'Saturday', label: '9 August' },
+  { d: 10, w: 'Sunday', label: '10 August' },
+  { d: 11, w: 'Monday', label: '11 August' },
+  { d: 12, w: 'Tuesday', label: '12 August' },
+  { d: 13, w: 'Wednesday', label: '13 August' },
 ]
 
 /* Defined outside Reschedule on purpose. Declaring it inside makes React see
@@ -193,9 +211,16 @@ function Cell({ day, sel, setSel }) {
   )
 }
 
-export function Reschedule({ go }) {
+export function Reschedule({ go, onPick }) {
   const [sel, setSel] = useState(null)
-  const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={setSel} />
+  /* hold on the selected state briefly so the choice is visibly registered
+     before the screen changes — otherwise the tap feels unacknowledged */
+  const choose = (d) => {
+    setSel(d)
+    const day = DAYS.find((x) => x.d === d)
+    setTimeout(() => onPick?.(day), 420)
+  }
+  const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={choose} />
 
   return (
     <div className="fx fx-resched dotgrid">
