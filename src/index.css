@@ -83,7 +83,11 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   background: #fff; border-radius: 24px; overflow: hidden; isolation: isolate;
   font-family: 'Kalice Trial', 'Inter', sans-serif;
 }
-.fig-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+/* scaled up so the blur doesn't feather in transparent edges */
+.fig-bg {
+  position: absolute; inset: -12px; width: calc(100% + 24px); height: calc(100% + 24px);
+  object-fit: cover; z-index: 2;
+}
 .fig-overlay {
   position: absolute; left: 0; top: 0; width: 375px; height: 812px; z-index: 3;
   background: rgba(162, 164, 164, 0.8);
@@ -123,7 +127,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   background: #000; border: 1px solid #8f8f8f; border-radius: 2px; padding: 8px;
   color: #fff; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
   line-height: 1.4; letter-spacing: 0.25px; white-space: nowrap; flex: none;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 /* ---- sheet (163:3278) ---- */
@@ -149,7 +153,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fig-card {
   background: #fff; border-radius: 4px; padding: 12px 8px; width: 100%;
   display: flex; gap: 12px; align-items: center; justify-content: center; text-align: left;
-  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .fig-card:active { opacity: .82; }
 .fig-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
@@ -194,7 +198,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   border: 1px solid #e3e3e3; border-radius: 20px; padding: 6px 16px;
   font-size: 16px; line-height: 1.4; letter-spacing: 0.25px; color: #000; white-space: nowrap;
 }
-.in-tooltip { display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.04)); }
+.in-tooltip { display: flex; flex-direction: column; align-items: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); }
 .in-pointer { width: 44px; height: 6px; display: block; }
 .in-tip-body {
   background: #fff; border-radius: 42px; padding: 8px 12px 8px 10px;
@@ -223,7 +227,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .in-card {
   background: #fff; border-radius: 4px; padding: 12px 8px; width: 100%;
   display: flex; gap: 12px; align-items: center; justify-content: center; text-align: left;
-  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .in-card:active { opacity: .82; }
 .in-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
@@ -336,7 +340,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-card {
   background: #fff; border-radius: 4px; padding: 12px 8px; width: 100%;
   display: flex; gap: 12px; align-items: center; justify-content: center; text-align: left;
-  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .fx-card:active { opacity: .82; }
 .fx-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
@@ -353,7 +357,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-msg-out { display: flex; flex-direction: column; align-items: flex-end; width: 100%; }
 .fx-bubble {
   width: 287px; padding: 12px; border-radius: 12px 12px 12px 0;
-  display: flex; flex-direction: column; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.04));
+  display: flex; flex-direction: column; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .fx-bubble.them { background: linear-gradient(180deg, #f5faff, #ebf4ff); }
 .fx-bubble.me { background: linear-gradient(180deg, #ffffff, #ededed); }
@@ -370,7 +374,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-send {
   width: 36px; height: 36px; flex: none; background: #000; border: 1px solid #8f8f8f;
   border-radius: 2px; display: flex; align-items: center; justify-content: center;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 .fx-send img { width: 20px; height: 20px; }
 
@@ -379,6 +383,16 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
    3,000 ellipses in Figma; one CSS pattern here.
    1.35px dots on an 11.35px grid.
    ========================================================== */
+.wb-stage { display: flex; justify-content: center; }
+
+/* honour the OS setting — motion should never be mandatory */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .dotgrid {
   background-image: radial-gradient(circle at center, #e0e0e0 0.675px, transparent 0.7px);
   background-size: 11.35px 11.35px;

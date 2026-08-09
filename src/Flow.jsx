@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-
+import { motion, AnimatePresence } from 'framer-motion'
+import { stagger, riseItem, fadeItem, orbIn, tap, EASE } from './motion'
 
 /* Part 1 screens, built 1:1 from Figma
    unBox-benchmarking · section 169:7315
@@ -59,30 +60,48 @@ export function Loading({ onDone, step: fixedStep }) {
   return (
     <div className="fx fx-loading dotgrid">
       <StatusBar />
-      <div className="fx-load-body">
-        <div className="fx-load-orb-row">
-          <div className="fx-orb-96"><img src={F.orb} alt="" /></div>
-        </div>
-        <div className="fx-checks">
+      <motion.div className="fx-load-body" initial="initial" animate="animate" {...stagger(0.1, 0.05)}>
+        <motion.div className="fx-load-orb-row">
+          <motion.div className="fx-orb-96" variants={orbIn}><img src={F.orb} alt="" /></motion.div>
+        </motion.div>
+        <motion.div className="fx-checks" variants={fadeItem}>
           <img className="fx-rail" src={F.rail} alt="" />
           <div className="fx-check-list">
             {CHECKS.map((c, i) => {
-              const done = step > i + 0 && step >= i + 1
+              const done = step >= i + 1
               return (
                 <div className="fx-check" key={c.t}>
                   <span className={`fx-check-mark ${done ? 'done' : ''}`}>
-                    {done ? <img src={F.tick} alt="" /> : <i />}
+                    {done
+                      ? <motion.img
+                          src={F.tick} alt=""
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.26, ease: EASE }}
+                        />
+                      : <i />}
                   </span>
                   <span className="fx-check-text">
                     <span className="fx-title-16">{c.t}</span>
-                    {done && <span className="fx-sub-14 fade">{c.d}</span>}
+                    <AnimatePresence>
+                      {done && (
+                        <motion.span
+                          className="fx-sub-14"
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, ease: EASE, delay: 0.08 }}
+                        >
+                          {c.d}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </span>
                 </div>
               )
             })}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       <HomeBar />
     </div>
   )
@@ -98,17 +117,26 @@ const DAYS = [
 export function Reschedule({ go }) {
   const [sel, setSel] = useState(null)
   const Cell = ({ day }) => (
-    <button className={`fx-day ${sel === day.d ? 'on' : ''}`} onClick={() => setSel(day.d)}>
+    <motion.button
+      className={`fx-day ${sel === day.d ? 'on' : ''}`}
+      onClick={() => setSel(day.d)}
+      variants={riseItem}
+      whileTap={{ scale: 0.96 }}
+    >
       <span className="fx-day-n">{day.d}</span>
       <span className="fx-day-w">{day.w}</span>
-    </button>
+    </motion.button>
   )
 
   return (
     <div className="fx fx-resched dotgrid">
       <StatusBar />
       <div className="fx-pad">
-        <div className="fx-agent">
+        <motion.div
+          className="fx-agent"
+          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: EASE }}
+        >
           <div className="fx-agent-row">
             <div className="fx-orb-40"><img src={F.orb} alt="" /></div>
             <div className="fx-agent-name">
@@ -117,27 +145,27 @@ export function Reschedule({ go }) {
             </div>
           </div>
           <img className="fx-sep" src={F.sepDashed} alt="" />
-        </div>
+        </motion.div>
 
         <div className="fx-resched-body">
-          <div className="fx-resched-top">
-            <div className="fx-pick">
-              <img className="fx-cal" src={F.calBig} alt="" />
-              <p className="fx-title-24">Which day works?</p>
-              <div className="fx-days">
-                <div className="fx-day-row"><Cell day={DAYS[0]} /><Cell day={DAYS[1]} /></div>
-                <div className="fx-day-row"><Cell day={DAYS[2]} /><Cell day={DAYS[3]} /></div>
-                <div className="fx-day-row single"><Cell day={DAYS[4]} /></div>
-              </div>
-            </div>
+          <motion.div className="fx-resched-top" initial="initial" animate="animate" {...stagger(0.05, 0.1)}>
+            <motion.div className="fx-pick">
+              <motion.img className="fx-cal" src={F.calBig} alt="" variants={orbIn} />
+              <motion.p className="fx-title-24" variants={riseItem}>Which day works?</motion.p>
+              <motion.div className="fx-days">
+                <motion.div className="fx-day-row"><Cell day={DAYS[0]} /><Cell day={DAYS[1]} /></motion.div>
+                <motion.div className="fx-day-row"><Cell day={DAYS[2]} /><Cell day={DAYS[3]} /></motion.div>
+                <motion.div className="fx-day-row single"><Cell day={DAYS[4]} /></motion.div>
+              </motion.div>
+            </motion.div>
 
-            <div className="fx-or">
+            <motion.div className="fx-or" variants={fadeItem}>
               <img src={F.sepThin} alt="" />
               <span className="fx-sub-14">or</span>
               <img src={F.sepThin} alt="" />
-            </div>
+            </motion.div>
 
-            <button className="fx-card" onClick={() => go('agent')}>
+            <motion.button className="fx-card" onClick={() => go('agent')} variants={riseItem} {...tap}>
               <span className="fx-card-main">
                 <span className="fx-card-icon"><img src={F.iRm} alt="" /></span>
                 <span className="fx-card-text">
@@ -146,8 +174,8 @@ export function Reschedule({ go }) {
                 </span>
               </span>
               <span className="fx-chev"><img src={F.chevron} alt="" /></span>
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
       <HomeBar />
@@ -167,7 +195,11 @@ export function Agent() {
     <div className="fx fx-agent-screen dotgrid">
       <StatusBar />
       <div className="fx-pad">
-        <div className="fx-agent">
+        <motion.div
+          className="fx-agent"
+          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: EASE }}
+        >
           <div className="fx-agent-row">
             <div className="fx-avatar"><img src={F.avatar} alt="" /></div>
             <div className="fx-agent-name">
@@ -176,32 +208,36 @@ export function Agent() {
             </div>
           </div>
           <img className="fx-sep" src={F.sepChat} alt="" />
-        </div>
+        </motion.div>
 
         <div className="fx-chat">
-          <div className="fx-thread">
-            <div className="fx-msg-group">
+          <motion.div className="fx-thread" initial="initial" animate="animate" {...stagger(0.14, 0.18)}>
+            <motion.div className="fx-msg-group">
               {THREAD.filter((m) => m.from === 'them').map((m) => (
-                <div className="fx-bubble them" key={m.text}>
+                <motion.div className="fx-bubble them" key={m.text} variants={riseItem}>
                   <p className="fx-msg">{m.text}</p>
                   <span className="fx-time-stamp">{m.time}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
-            <div className="fx-msg-out">
+            </motion.div>
+            <motion.div className="fx-msg-out">
               {THREAD.filter((m) => m.from === 'me').map((m) => (
-                <div className="fx-bubble me" key={m.text}>
+                <motion.div className="fx-bubble me" key={m.text} variants={riseItem}>
                   <p className="fx-msg">{m.text}</p>
                   <span className="fx-time-stamp">{m.time}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="fx-composer">
+          <motion.div
+            className="fx-composer"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.34, ease: EASE, delay: 0.3 }}
+          >
             <span className="fx-placeholder">Send a message...</span>
-            <button className="fx-send"><img src={F.send} alt="Send" /></button>
-          </div>
+            <motion.button className="fx-send" {...tap}><img src={F.send} alt="Send" /></motion.button>
+          </motion.div>
         </div>
       </div>
       <HomeBar />

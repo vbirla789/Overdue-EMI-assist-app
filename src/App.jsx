@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { screenSlide } from './motion'
 import Part1 from './Part1'
 import Part2 from './Part2'
 import { Toast, Sheet, Intro } from './Entry'
@@ -98,16 +100,20 @@ export default function App() {
       </aside>
 
       <main className="wb-main">
-        {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
-          : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
-          : screen === 'loading' ? <Loading key="run" onDone={() => setScreen('resched')} />
-          : screen === 'loading:3' ? <Loading key="done" step={3} />
-          : screen === 'resched' ? <Reschedule go={go} />
-          : screen === 'agent' ? <Agent />
-          : screen === 'sheet' ? <Sheet go={go} />
-          : isP2
-            ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
-            : <Part1 screen={screen} go={go} />}
+        <AnimatePresence mode="wait">
+          <motion.div className="wb-stage" key={screen} {...screenSlide}>
+            {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
+              : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
+              : screen === 'loading' ? <Loading key="run" onDone={() => setScreen('resched')} />
+              : screen === 'loading:3' ? <Loading key="done" step={3} />
+              : screen === 'resched' ? <Reschedule go={go} />
+              : screen === 'agent' ? <Agent />
+              : screen === 'sheet' ? <Sheet go={go} />
+              : isP2
+                ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
+                : <Part1 screen={screen} go={go} />}
+          </motion.div>
+        </AnimatePresence>
         {NOTES[screen] && <div className="wb-note"><b>Why this way — </b>{NOTES[screen]}</div>}
       </main>
     </div>

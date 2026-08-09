@@ -1,8 +1,14 @@
-/* Toast + option sheet, built 1:1 from Figma
-   unBox-benchmarking · node 163:3357 (frames 163:3264 and 163:3278) */
+/* Toast + intro + option sheet, built 1:1 from Figma
+   unBox-benchmarking · 163:3264, 166:3429, 163:3278
+
+   Note: Framer variants only propagate through motion components, so every
+   wrapper between a stagger parent and an animated child is a motion.div. */
+
+import { motion } from 'framer-motion'
+import { toastRise, sheetRise, stagger, riseItem, orbIn, fadeItem, tap } from './motion'
 
 const A = {
-  bg: '/figma/app-bg.png',
+  bg: '/figma/app-bg.jpg',
   toastIcon: '/figma/toast-icon.png',
   orb: '/figma/orb.png',
   pay: '/figma/icon-pay.svg',
@@ -20,13 +26,14 @@ const A = {
   iRm: '/figma/i-rm.svg',
 }
 
+/* The backdrop never changes, so the image is blurred once rather than
+   re-sampling the backdrop every frame — backdrop-filter was the single
+   most expensive thing on the page on mobile. */
 function Frame({ children, blur }) {
   return (
     <div className="fig">
-      <img className="fig-bg" src={A.bg} alt="" />
-      <div className="fig-overlay" style={{ backdropFilter: `blur(${blur}px)`, WebkitBackdropFilter: `blur(${blur}px)` }}>
-        {children}
-      </div>
+      <img className="fig-bg" src={A.bg} alt="" style={{ filter: `blur(${blur}px)` }} />
+      <div className="fig-overlay">{children}</div>
       <div className="fig-homebar"><i /></div>
     </div>
   )
@@ -37,16 +44,16 @@ export function Toast({ onOpen }) {
   return (
     <Frame blur={4}>
       <div className="fig-toast-pad">
-        <div className="fig-toast">
+        <motion.div className="fig-toast" {...toastRise}>
           <img className="fig-toast-icon" src={A.toastIcon} alt="" />
           <div className="fig-toast-body">
             <div className="fig-toast-text">
               <p className="fig-title-14">₹45,000 EMI due today</p>
               <p className="fig-sub-14">Pay it or move the date</p>
             </div>
-            <button className="fig-btn" onClick={onOpen}>See options</button>
+            <motion.button className="fig-btn" onClick={onOpen} {...tap}>See options</motion.button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </Frame>
   )
@@ -61,7 +68,7 @@ const INTRO_OPTIONS = [
 
 function IntroCard({ o, go }) {
   return (
-    <button className="in-card" onClick={() => go(o.go)}>
+    <motion.button className="in-card" onClick={() => go(o.go)} variants={riseItem} {...tap}>
       <span className="in-card-main">
         <span className="in-card-icon"><img src={o.icon} alt="" /></span>
         <span className="in-card-text">
@@ -70,7 +77,7 @@ function IntroCard({ o, go }) {
         </span>
       </span>
       <span className="in-card-chev"><span className="fig-chevron"><img src={A.chevron2} alt="" /></span></span>
-    </button>
+    </motion.button>
   )
 }
 
@@ -85,40 +92,40 @@ export function Intro({ go, onBack }) {
           <img className="in-status-right" src={A.statusRight} alt="" />
         </div>
         <div className="in-nav">
-          <button className="in-back" onClick={onBack} aria-label="Back">
+          <motion.button className="in-back" onClick={onBack} aria-label="Back" {...tap}>
             <span className="fig-chevron flip"><img src={A.chevron2} alt="" /></span>
-          </button>
+          </motion.button>
           <img className="fig-sep" src={A.separator2} alt="" />
         </div>
       </div>
 
-      <div className="in-body">
-        <div className="in-hero">
-          <div className="in-orb"><img src={A.orb} alt="" /></div>
-          <div className="in-id">
-            <span className="in-pill">Nia AI</span>
-            <div className="in-tooltip">
+      <motion.div className="in-body" initial="initial" animate="animate" {...stagger(0.07, 0.08)}>
+        <motion.div className="in-hero">
+          <motion.div className="in-orb" variants={orbIn}><img src={A.orb} alt="" /></motion.div>
+          <motion.div className="in-id">
+            <motion.span className="in-pill" variants={fadeItem}>Nia AI</motion.span>
+            <motion.div className="in-tooltip" variants={fadeItem}>
               <img className="in-pointer" src={A.pointer} alt="" />
               <div className="in-tip-body">
                 <span className="in-dot"><i /></span>
                 <span className="in-tip-text">Your installment is on time</span>
               </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
-        <div className="in-main">
-          <p className="in-title">Your EMI is overdue</p>
-          <div className="in-options">
-            <div className="in-options-group">
+        <motion.div className="in-main">
+          <motion.p className="in-title" variants={riseItem}>Your EMI is overdue</motion.p>
+          <motion.div className="in-options">
+            <motion.div className="in-options-group">
               <IntroCard o={a} go={go} />
               <IntroCard o={b} go={go} />
-            </div>
-            <img className="fig-sep" src={A.separator2} alt="" />
+            </motion.div>
+            <motion.img className="fig-sep" src={A.separator2} alt="" variants={fadeItem} />
             <IntroCard o={c} go={go} />
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
 
       <div className="in-homebar"><i /></div>
     </div>
@@ -129,13 +136,13 @@ export function Intro({ go, onBack }) {
 const OPTIONS = [
   { icon: A.pay, t: 'Pay it now', d: 'Pay it, or move it in seconds', go: 'paid' },
   { icon: A.date, t: 'Move the date', d: 'Up to 5 days. Still no late fee.', go: 'check:reschedule' },
-  { icon: A.rm, t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'check:pause', apart: true },
+  { icon: A.rm, t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'check:pause' },
 ]
 
 export function Sheet({ go }) {
   const [a, b, c] = OPTIONS
   const Card = ({ o }) => (
-    <button className="fig-card" onClick={() => go(o.go)}>
+    <motion.button className="fig-card" onClick={() => go(o.go)} variants={riseItem} {...tap}>
       <span className="fig-card-main">
         <span className="fig-card-icon"><img src={o.icon} alt="" /></span>
         <span className="fig-card-text">
@@ -144,30 +151,32 @@ export function Sheet({ go }) {
         </span>
       </span>
       <span className="fig-chevron"><img src={A.chevron} alt="" /></span>
-    </button>
+    </motion.button>
   )
 
   return (
     <Frame blur={7}>
       <div className="fig-sheet-pad">
-        <div className="fig-grabber"><i /></div>
-        <div className="fig-sheet">
-          <div className="fig-sheet-head">
-            <div className="fig-orb"><img src={A.orb} alt="" /></div>
-            <div className="fig-sheet-title">
-              <p className="fig-title-24">₹45,000 EMI due today</p>
-              <p className="fig-sub-16">No late fee yet</p>
-            </div>
-          </div>
-          <div className="fig-options">
-            <div className="fig-options-group">
-              <Card o={a} />
-              <Card o={b} />
-            </div>
-            <img className="fig-sep" src={A.separator} alt="" />
-            <Card o={c} />
-          </div>
-        </div>
+        <motion.div {...sheetRise}>
+          <div className="fig-grabber"><i /></div>
+          <motion.div className="fig-sheet" initial="initial" animate="animate" {...stagger(0.06, 0.14)}>
+            <motion.div className="fig-sheet-head">
+              <motion.div className="fig-orb" variants={orbIn}><img src={A.orb} alt="" /></motion.div>
+              <motion.div className="fig-sheet-title" variants={riseItem}>
+                <p className="fig-title-24">₹45,000 EMI due today</p>
+                <p className="fig-sub-16">No late fee yet</p>
+              </motion.div>
+            </motion.div>
+            <motion.div className="fig-options">
+              <motion.div className="fig-options-group">
+                <Card o={a} />
+                <Card o={b} />
+              </motion.div>
+              <motion.img className="fig-sep" src={A.separator} alt="" variants={fadeItem} />
+              <Card o={c} />
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </Frame>
   )
