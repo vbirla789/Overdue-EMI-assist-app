@@ -282,7 +282,10 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 
 /* ---- loading (168:3922) ---- */
+/* Figma pads the frame 160px but keeps the status bar pinned to the top,
+   so it must sit outside the padded flow. */
 .fx-loading { padding: 160px 16px; }
+.fx-loading .fx-status { position: absolute; left: 0; top: 0; z-index: 3; }
 .fx-load-body { display: flex; flex-direction: column; gap: 48px; width: 100%; }
 .fx-load-orb-row { display: flex; flex-direction: column; align-items: center; width: 100%; }
 .fx-checks { display: flex; gap: 12px; align-items: flex-start; justify-content: center; width: 100%; }

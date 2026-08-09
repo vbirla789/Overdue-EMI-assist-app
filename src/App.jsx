@@ -100,8 +100,8 @@ export default function App() {
       <main className="wb-main">
         {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
           : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
-          : screen === 'loading' ? <Loading onDone={() => setScreen('resched')} />
-          : screen === 'loading:3' ? <Loading step={3} />
+          : screen === 'loading' ? <Loading key="run" onDone={() => setScreen('resched')} />
+          : screen === 'loading:3' ? <Loading key="done" step={3} />
           : screen === 'resched' ? <Reschedule go={go} />
           : screen === 'agent' ? <Agent />
           : screen === 'sheet' ? <Sheet go={go} />
