@@ -255,7 +255,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .in-tip-text { font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.25px; color: #e06900; white-space: nowrap; }
 
-.in-main { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+.in-main { display: flex; flex-direction: column; gap: 28px; width: 100%; }
 .in-title {
   font-family: 'Rupee', 'Kalice Trial', Georgia, serif; font-weight: 700; font-size: 22px;
   line-height: 1.3; letter-spacing: 0.25px; color: #000; text-align: center; width: 100%;
@@ -276,7 +276,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .in-card:active { opacity: .82; }
 .in-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
-.in-card-icon { width: 40px; height: 40px; flex: none; overflow: hidden; display: block; }
+.in-card-icon { width: 36px; height: 36px; flex: none; overflow: hidden; display: block; }
 .in-card-icon img { width: 100%; height: 100%; object-fit: contain; }
 .in-card-text { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; word-break: break-word; }
 .in-card-chev { width: 40px; height: 40px; flex: none; display: flex; align-items: center; justify-content: center; }
