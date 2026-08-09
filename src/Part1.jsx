@@ -18,26 +18,26 @@ const RUNS = {
   reschedule: {
     title: 'Checking your account…',
     steps: [
-      { t: 'Payment history', r: '11 of 12 on time', ms: 1200 },
-      { t: 'Account standing', r: 'Good', ms: 1100 },
-      { t: 'How far I can move it', r: '5 days', ms: 1100 },
+      { t: 'Payment history', r: '11 of your last 12 on time', ms: 1200 },
+      { t: 'Account standing', r: 'Good, no active holds', ms: 1100 },
+      { t: 'CIBIL report', r: 'Nothing reported yet', ms: 1200 },
     ],
-    next: 'proposal',
+    next: 'adjust',
   },
   pause: {
     title: 'Checking if I can do this…',
     steps: [
-      { t: 'Payment history', r: '11 of 12 on time', ms: 1200 },
-      { t: 'Can I approve a pause?', r: 'No — it changes your loan term', ms: 1300, tone: 'warn' },
-      { t: 'Who can', r: 'Rhea, your manager. Online now', ms: 1100 },
+      { t: 'Payment history', r: '11 of your last 12 on time', ms: 1200 },
+      { t: 'What a pause needs', r: 'A change to your loan term', ms: 1300, tone: 'warn' },
+      { t: 'Can I approve that', r: 'No — a person has to', ms: 1200, tone: 'warn' },
     ],
     next: 'escalate:pause',
   },
   unknown: {
     title: 'Checking your account…',
     steps: [
-      { t: 'Payment history', r: '11 of 12 on time', ms: 1200 },
-      { t: 'Account standing', r: 'Can’t read this right now', ms: 1400, tone: 'bad' },
+      { t: 'Payment history', r: '11 of your last 12 on time', ms: 1200 },
+      { t: 'Account standing', r: 'Mid-update, can’t read it', ms: 1400, tone: 'bad' },
     ],
     next: 'escalate:unknown',
   },
@@ -91,7 +91,7 @@ function Checking({ run, onDone }) {
 
 /* ------------------------------------------------------------------ */
 export default function Part1({ screen, go }) {
-  const [date, setDate] = useState(DATES[4])
+  const [date, setDate] = useState(null)
   const [draft, setDraft] = useState('')
   const s = screen
 
@@ -138,60 +138,46 @@ export default function Part1({ screen, go }) {
     )
   }
 
-  /* ---------- proposal ---------- */
-  if (s === 'proposal') return (
-    <Phone>
-      <div className="screen">
-        <TopBar mode="ai" sub="Here’s what I can do" />
-        <div className="pad stack" style={{ gap: 14 }}>
-          <div className="bubble">
-            You pay on time, so I can move this to <b>13 Aug</b>.
-            <br />That’s 5 days — my limit without a manager.
-          </div>
-
-          <div className="card">
-            <Row k="Amount" v={money(EMI)} />
-            <Row k="Due date" v={<><s style={{ color: 'var(--ink-3)', fontWeight: 400 }}>{DUE}</s>&nbsp; 13 Aug</>} />
-            <Row k="Extra cost" v="₹0" tone="good" />
-          </div>
-        </div>
-        <div className="spacer" />
-        <div className="footer">
-          <button className="btn brand" onClick={() => { setDate(DATES[4]); go('done') }}>Move to 13 Aug</button>
-          <button className="btn ghost" onClick={() => go('adjust')}>Choose another date</button>
-        </div>
-      </div>
-    </Phone>
-  )
-
-  /* ---------- adjust ---------- */
+  /* ---------- pick a date ---------- */
   if (s === 'adjust') return (
     <Phone>
       <div className="screen">
         <TopBar mode="ai" sub="Pick a date" />
         <div className="pad stack" style={{ gap: 16 }}>
-          <div className="bubble">Anything up to 13 Aug works.</div>
+          <div className="bubble">
+            You pay on time, so I can move this — up to <b>5 days</b>. Which day works?
+          </div>
 
           <div className="stack" style={{ gap: 10 }}>
             <div className="dates">
               {DATES.map((d) => (
-                <button key={d.d} className={`date ${date.d === d.d ? 'on' : ''}`} onClick={() => setDate(d)}>
+                <button key={d.d} className={`date ${date?.d === d.d ? 'on' : ''}`} onClick={() => setDate(d)}>
                   <b>{d.d}</b><span>{d.w}</span>
                 </button>
               ))}
             </div>
             <div className="limit">
-              <span>{date.off} of 5 days</span>
-              <span className="limit-bar"><i style={{ width: `${(date.off / 5) * 100}%` }} /></span>
+              <span>{date ? `${date.off} of 5 days` : 'up to 5 days'}</span>
+              <span className="limit-bar"><i style={{ width: `${((date?.off ?? 0) / 5) * 100}%` }} /></span>
               <span>my limit</span>
             </div>
           </div>
 
-          <Option icon="🗓️" title="I need past 13 Aug" desc="Rhea, your manager, decides that" onClick={() => go('escalate:beyond')} />
+          {date && (
+            <div className="card fade">
+              <Row k="Amount" v={money(EMI)} sub="unchanged" />
+              <Row k="Due date" v={<><s style={{ color: 'var(--ink-3)', fontWeight: 400 }}>{DUE}</s>&nbsp; {date.label}</>} />
+              <Row k="Extra cost" v="₹0" tone="good" />
+            </div>
+          )}
+
+          <Option icon="🗓️" title="I need more than 5 days" desc="A person decides anything longer" onClick={() => go('escalate:beyond')} />
         </div>
         <div className="spacer" />
         <div className="footer">
-          <button className="btn brand" onClick={() => go('done')}>Move to {date.label}</button>
+          <button className="btn brand" disabled={!date} onClick={() => go('done')}>
+            {date ? `Move to ${date.label}` : 'Pick a date'}
+          </button>
           <button className="btn ghost" onClick={() => go('intent')}>Back</button>
         </div>
       </div>
@@ -199,22 +185,24 @@ export default function Part1({ screen, go }) {
   )
 
   /* ---------- done ---------- */
-  if (s === 'done') return (
+  if (s === 'done') {
+    const d = date ?? DATES[4]
+    return (
     <Phone>
       <div className="screen">
         <Gap h={56} />
         <div className="pad stack" style={{ gap: 18 }}>
           <div className="hero good">✓</div>
           <div>
-            <h1 className="h1">Moved to {date.label}.</h1>
+            <h1 className="h1">Moved to {d.label}.</h1>
             <p className="body" style={{ marginTop: 6 }}>Nothing’s overdue any more.</p>
           </div>
           <div className="card">
             <Row k="Pay" v={money(EMI)} />
-            <Row k="By" v={date.label} />
+            <Row k="By" v={d.label} />
             <Row k="Late fee" v="₹0" tone="good" />
           </div>
-          <p className="small">I’ll remind you on {date.d - 1} Aug · Ref {REF}</p>
+          <p className="small">I’ll remind you on {d.d - 1} Aug · Ref {REF}</p>
         </div>
         <div className="spacer" />
         <div className="footer">
@@ -222,7 +210,8 @@ export default function Part1({ screen, go }) {
         </div>
       </div>
     </Phone>
-  )
+    )
+  }
 
   /* ---------- paid ---------- */
   if (s === 'paid') return (

@@ -8,8 +8,7 @@ const NAV = [
     items: [
       ['intent', 'Intent / proposal', 'What Assist can do, before anything happens'],
       ['check:reschedule', 'Streaming — reschedule', 'Named checks, real findings'],
-      ['proposal', 'Proposal', 'The 5-day offer, with its limit stated'],
-      ['adjust', 'Confirmation / adjust', 'Pick a date; the limit is visible'],
+      ['adjust', 'Pick a date', 'User chooses; the 5-day limit is visible'],
       ['done', 'Rescheduled', 'Confirmed outcome'],
       ['check:pause', 'Streaming — hardship pause', 'A check that ends in escalation'],
       ['escalate:pause', 'Escalation — pause', 'Handoff to a person'],
@@ -36,8 +35,7 @@ const NAV = [
 const NOTES = {
   'intent': 'One line of problem, three options, one escape. The options are exactly what the assistant is allowed to do — and option 3 says “goes to a person” up front, so escalation is never a surprise.',
   'check:reschedule': 'Not a spinner. Named checks, real answers, and the offer is visibly built from them. The last check states the 5-day ceiling before anything is promised.',
-  'proposal': 'Says why it can help, then names its own limit. Stating the limit early is what stops escalation feeling like rejection.',
-  'adjust': 'The 5-day rule as a meter, not an error after the fact. Going past it is an offer, not a wall.',
+  'adjust': 'The assistant never picks for you — it offers the range and says why it stops there. Nothing is selected on arrival, so the CTA can’t be tapped by accident. The 5-day rule is a meter, not an error after the fact, and going past it is an offer rather than a wall.',
   'done': 'Ends the anxiety in the headline. Ref number in the footnote, not the hero.',
   'check:pause': 'Same grammar as the reschedule check, so it’s trusted — but check 2 turns the answer, and check 3 already names who can help.',
   'escalate:pause': 'The graded moment. Three lines answer the three worries: she knows, she calls by 6 PM, nothing bad happens meanwhile. Header switches to Rhea — the assistant steps aside.',
