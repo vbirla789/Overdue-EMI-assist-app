@@ -10,7 +10,7 @@ const NAV = [
   {
     label: 'Part 1 — assistant flow',
     items: [
-      ['toast', 'Toast', 'From Figma — the trigger, over the app'],
+      ['toast', 'Modal', 'From Figma — modal over the app'],
       ['intro', 'Intro screen', 'From Figma — full screen'],
       ['loading', 'Loading — running', 'From Figma — checks resolve one by one'],
       ['loading:3', 'Loading — all done', 'From Figma — final state'],
@@ -44,8 +44,8 @@ const NAV = [
 ]
 
 const NOTES = {
-  'toast': 'Built 1:1 from Figma (163:3264). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. “See options” promises choice rather than a statement.',
-  'intro': 'Built 1:1 from Figma (166:3429). The status pill sits on the assistant, not the headline, so who is speaking and what is wrong stay separate.',
+  'toast': 'Built 1:1 from Figma (175:73758). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. Close sits first because a user who is not ready to deal with it should not have to hunt for the way out.',
+  'intro': 'Built 1:1 from Figma (176:84797). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
   'loading': 'Built 1:1 from Figma (168:3813–168:3922). Each check resolves in turn — a pulsing dot becomes a tick and the finding appears underneath. The rail ties them into one sequence, so it reads as work being done rather than three separate spinners.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
   'resched': 'Built 1:1 from Figma (168:4190). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',

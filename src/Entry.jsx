@@ -29,32 +29,37 @@ const A = {
 /* The backdrop never changes, so the image is blurred once rather than
    re-sampling the backdrop every frame — backdrop-filter was the single
    most expensive thing on the page on mobile. */
-function Frame({ children, blur }) {
+function Frame({ children, blur, center }) {
   return (
     <div className="fig">
       <img className="fig-bg" src={A.bg} alt="" style={{ filter: `blur(${blur}px)` }} />
-      <div className="fig-overlay">{children}</div>
+      <div className={`fig-overlay ${center ? 'center' : ''}`}>{children}</div>
       <div className="fig-homebar"><i /></div>
     </div>
   )
 }
 
-/* ---------- 163:3264 — toast ---------- */
+/* ---------- 175:73758 — modal over the app ---------- */
 export function Toast({ onOpen }) {
   return (
-    <Frame blur={4}>
-      <div className="fig-toast-pad">
-        <motion.div className="fig-toast" {...toastRise}>
-          <img className="fig-toast-icon" src={A.toastIcon} alt="" />
-          <div className="fig-toast-body">
-            <div className="fig-toast-text">
-              <p className="fig-title-14">₹45,000 EMI due today</p>
-              <p className="fig-sub-14">Pay it or move the date</p>
-            </div>
-            <motion.button className="fig-btn" onClick={onOpen} {...tap}>See options</motion.button>
-          </div>
-        </motion.div>
-      </div>
+    <Frame blur={4} center>
+      <motion.div
+        className="fig-modal"
+        initial={{ opacity: 0, scale: 0.94, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+      >
+        <img className="fig-modal-icon" src={A.toastIcon} alt="" />
+        <div className="fig-modal-text">
+          <p className="fig-modal-title">₹45,000 EMI due today</p>
+          <p className="fig-modal-sub">Pay it or move the date</p>
+        </div>
+        <div className="fig-modal-actions">
+          <motion.button className="fig-modal-btn ghost" onClick={onOpen} {...tap}>Close</motion.button>
+          <motion.button className="fig-modal-btn solid" onClick={onOpen} {...tap}>See options</motion.button>
+        </div>
+      </motion.div>
     </Frame>
   )
 }
@@ -66,7 +71,23 @@ const INTRO_OPTIONS = [
   { icon: A.iRm, t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'agent' },
 ]
 
-function IntroCard({ o, go }) {
+/* The first two options sit side by side with the icon stacked above the
+   text; the RM route stays full width with a chevron, so the layout says
+   it is a different kind of thing before the copy does. */
+function IntroCard({ o, go, stacked }) {
+  if (stacked) {
+    return (
+      <motion.button className="in-card stacked" onClick={() => go(o.go)} variants={riseItem} {...tap}>
+        <span className="in-card-stack">
+          <span className="in-card-icon"><img src={o.icon} alt="" /></span>
+          <span className="in-card-text">
+            <span className="fig-title-16">{o.t}</span>
+            <span className="fig-sub-14">{o.d}</span>
+          </span>
+        </span>
+      </motion.button>
+    )
+  }
   return (
     <motion.button className="in-card" onClick={() => go(o.go)} variants={riseItem} {...tap}>
       <span className="in-card-main">
@@ -115,11 +136,11 @@ export function Intro({ go, onBack }) {
         </motion.div>
 
         <motion.div className="in-main">
-          <motion.p className="in-title" variants={riseItem}>Your EMI is overdue</motion.p>
+          <motion.p className="in-title" variants={riseItem}>Three ways to clear this</motion.p>
           <motion.div className="in-options">
             <motion.div className="in-options-group">
-              <IntroCard o={a} go={go} />
-              <IntroCard o={b} go={go} />
+              <IntroCard o={a} go={go} stacked />
+              <IntroCard o={b} go={go} stacked />
             </motion.div>
             <motion.img className="fig-sep" src={A.separator2} alt="" variants={fadeItem} />
             <IntroCard o={c} go={go} />
