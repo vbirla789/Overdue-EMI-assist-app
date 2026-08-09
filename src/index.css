@@ -139,7 +139,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   width: 96px; height: 96px; border-radius: 90px; background: #fff; padding: 1px;
   overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none;
 }
-.fig-orb img { width: 100%; height: 100%; object-fit: cover; border-radius: 90px; }
+.fig-orb img, .in-orb img, .fx-orb-96 img, .fx-orb-40 img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 90px; display: block;
+}
 .fig-sheet-title { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; text-align: center; }
 
 .fig-options { display: flex; flex-direction: column; gap: 16px; width: 100%; }

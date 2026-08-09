@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import ParticleSphere from './ParticleSphere'
+
 
 /* Part 1 screens, built 1:1 from Figma
    unBox-benchmarking · section 169:7315
@@ -18,6 +18,7 @@ const F = {
   avatar: '/figma/rm-avatar.png',
   sepChat: '/figma/sep-chat.svg',
   send: '/figma/send.svg',
+  orb: '/figma/orb.png',
 }
 
 function StatusBar() {
@@ -60,7 +61,7 @@ export function Loading({ onDone, step: fixedStep }) {
       <StatusBar />
       <div className="fx-load-body">
         <div className="fx-load-orb-row">
-          <div className="fx-orb-96"><ParticleSphere size={94} /></div>
+          <div className="fx-orb-96"><img src={F.orb} alt="" /></div>
         </div>
         <div className="fx-checks">
           <img className="fx-rail" src={F.rail} alt="" />
@@ -109,7 +110,7 @@ export function Reschedule({ go }) {
       <div className="fx-pad">
         <div className="fx-agent">
           <div className="fx-agent-row">
-            <div className="fx-orb-40"><ParticleSphere size={38} /></div>
+            <div className="fx-orb-40"><img src={F.orb} alt="" /></div>
             <div className="fx-agent-name">
               <span className="fx-title-16">Nia AI</span>
               <span className="fx-sub-14">Move the date</span>

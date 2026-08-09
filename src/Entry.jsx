@@ -1,8 +1,6 @@
 /* Toast + option sheet, built 1:1 from Figma
    unBox-benchmarking · node 163:3357 (frames 163:3264 and 163:3278) */
 
-import ParticleSphere from './ParticleSphere'
-
 const A = {
   bg: '/figma/app-bg.png',
   toastIcon: '/figma/toast-icon.png',
@@ -96,7 +94,7 @@ export function Intro({ go, onBack }) {
 
       <div className="in-body">
         <div className="in-hero">
-          <div className="in-orb"><ParticleSphere size={118} /></div>
+          <div className="in-orb"><img src={A.orb} alt="" /></div>
           <div className="in-id">
             <span className="in-pill">Nia AI</span>
             <div className="in-tooltip">
@@ -155,7 +153,7 @@ export function Sheet({ go }) {
         <div className="fig-grabber"><i /></div>
         <div className="fig-sheet">
           <div className="fig-sheet-head">
-            <div className="fig-orb"><ParticleSphere size={94} /></div>
+            <div className="fig-orb"><img src={A.orb} alt="" /></div>
             <div className="fig-sheet-title">
               <p className="fig-title-24">₹45,000 EMI due today</p>
               <p className="fig-sub-16">No late fee yet</p>
