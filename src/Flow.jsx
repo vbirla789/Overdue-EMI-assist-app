@@ -69,9 +69,10 @@ export function Loading({ onDone, step: fixedStep }) {
           <div className="fx-check-list">
             {CHECKS.map((c, i) => {
               const done = step >= i + 1
+              const active = !done && step === i
               return (
-                <div className="fx-check" key={c.t}>
-                  <span className={`fx-check-mark ${done ? 'done' : ''}`}>
+                <div className={`fx-check ${done ? '' : 'pending'}`} key={c.t}>
+                  <span className={`fx-check-mark ${done ? 'done' : ''} ${active ? 'active' : ''}`}>
                     {done
                       ? <motion.img
                           src={F.tick} alt=""
