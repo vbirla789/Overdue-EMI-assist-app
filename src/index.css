@@ -445,7 +445,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-avatar img { width: 100%; height: 100%; border-radius: 999px; object-fit: cover; display: block; }
 
 .fx-resched-body { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 32px; width: 100%; margin-top: 48px; }
-.fx-resched-top { display: flex; flex-direction: column; gap: 60px; align-items: center; width: 100%; }
+/* 185:162423 — 32px between the picker, the rule and the RM route */
+.fx-resched-top { display: flex; flex-direction: column; gap: 32px; align-items: center; width: 100%; }
 .fx-pick { display: flex; flex-direction: column; gap: 24px; align-items: center; width: 100%; }
 .fx-cal { width: 80px; height: 80px; flex: none; }
 .fx-days { display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; width: 100%; }

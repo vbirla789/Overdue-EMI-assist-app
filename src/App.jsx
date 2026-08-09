@@ -50,7 +50,7 @@ const NOTES = {
   'intro': 'Built 1:1 from Figma (176:84797). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
   'loading': 'Built 1:1 from Figma (168:3813–168:3922). Each check resolves in turn — a pulsing dot becomes a tick and the finding appears underneath. The rail ties them into one sequence, so it reads as work being done rather than three separate spinners.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
-  'resched': 'Built 1:1 from Figma (168:4190). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
+  'resched': 'Built 1:1 from Figma (185:162423). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
   'success': 'Built 1:1 from Figma (180:118152). The mark lands first with a little weight, then the copy, then the receipt — so the relief arrives before the detail. Late fee ₹0 is the line that matters most to someone who was late.',
   'moved': 'Built 1:1 from Figma (183:129204). Same shell as the paid outcome, different truth — the EMI is still owed, just later, so the subline confirms the lateness has stopped rather than claiming nothing is due. The date comes from whichever day the user picked.',
   'agent': 'Built 1:1 from Figma (184:151339). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
