@@ -1,83 +1,79 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-/* A real 3D sphere rather than a picture of one. The existing orb art is used
-   as an equirectangular environment map, so the reflections keep the pale
-   marble palette while the geometry gives it actual depth and parallax as it
-   turns. Deliberately lightweight: no shadows, one light, modest segment
-   count, and the loop stops when the element scrolls out of view. */
+/* A glass marble drawn by a custom fragment shader rather than a picture of
+   one. The form is shaded off the sphere's own normal, so the highlights stay
+   put while the mesh turns beneath them — only the cool wash inside drifts,
+   and slowly. A tight specular hotspot, a bounce highlight low on the far
+   side and a white fresnel rim do the rest.
 
-/* The surface is painted procedurally rather than sampled from the orb PNG.
-   That art is a circular render on transparency, so wrapping it round a
-   sphere dragged the transparent corners across the surface as hard dark
-   edges. Drawing the band directly keeps it soft and seamless at the wrap. */
-let cache = null
-function marbleTexture() {
-  if (cache) return cache
+   Deliberately cheap: no shadows, no textures, no environment map, one mesh,
+   and the loop pauses when the tab is hidden. */
 
-  const c = document.createElement('canvas')
-  c.width = 1024
-  c.height = 512
-  const x = c.getContext('2d')
-
-  x.fillStyle = '#f7f9fd'
-  x.fillRect(0, 0, 1024, 512)
-
-  /* Localised swirls rather than one band wrapping the whole sphere. A
-     full-width band looks identical at every angle, so the rotation was
-     running but invisible — discrete features give it something to carry. */
-  const swirls = [
-    { u: 0.18, v: 0.52, rx: 250, ry: 92, rot: -0.34, a: 0.72 },
-    { u: 0.52, v: 0.42, rx: 190, ry: 70, rot: 0.28, a: 0.55 },
-    { u: 0.80, v: 0.58, rx: 220, ry: 60, rot: -0.16, a: 0.44 },
-  ]
-
-  x.filter = 'blur(38px)'
-  for (const s of swirls) {
-    for (const shift of [-1024, 0, 1024]) {
-      const cx = shift + s.u * 1024
-      const cy = s.v * 512
-      const g = x.createLinearGradient(cx - s.rx, cy - s.ry, cx + s.rx, cy + s.ry)
-      g.addColorStop(0, 'rgba(88, 102, 138, 0)')
-      g.addColorStop(0.34, `rgba(62, 76, 112, ${s.a * 0.62})`)
-      g.addColorStop(0.52, `rgba(38, 49, 82, ${s.a})`)
-      g.addColorStop(0.74, `rgba(74, 88, 124, ${s.a * 0.38})`)
-      g.addColorStop(1, 'rgba(88, 102, 138, 0)')
-      x.fillStyle = g
-      x.beginPath()
-      x.ellipse(cx, cy, s.rx, s.ry, s.rot, 0, Math.PI * 2)
-      x.fill()
-    }
+const VERT = `
+  varying vec2 vUv;
+  varying vec3 vN;
+  varying vec3 vView;
+  void main() {
+    vUv = uv;
+    vN = normalize(normalMatrix * normal);
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vView = normalize(-mv.xyz);
+    gl_Position = projectionMatrix * mv;
   }
+`
 
-  /* pale highlights between the swirls keep it reading as marble */
-  x.filter = 'blur(52px)'
-  for (const u of [0.35, 0.68, 0.95]) {
-    for (const shift of [-1024, 0, 1024]) {
-      x.fillStyle = 'rgba(255, 255, 255, 0.85)'
-      x.beginPath()
-      x.ellipse(shift + u * 1024, 190, 180, 96, 0.3, 0, Math.PI * 2)
-      x.fill()
-    }
+const FRAG = `
+  precision highp float;
+  uniform float uTime;
+  varying vec2 vUv;
+  varying vec3 vN;
+  varying vec3 vView;
+
+  void main() {
+    /* silver crown falling into a dark navy base */
+    vec3 lift  = vec3(0.949, 0.953, 0.965);
+    vec3 body  = vec3(0.796, 0.808, 0.835);
+    vec3 shade = vec3(0.353, 0.380, 0.447);
+    vec3 core  = vec3(0.204, 0.224, 0.286);
+
+    /* Form comes from the world normal, not the UVs, so the light stays where
+       it is while the sphere rotates — otherwise the highlight would swim. */
+    float up = clamp(vN.y * 0.5 + 0.5, 0.0, 1.0);
+    vec3 col = mix(core, shade, smoothstep(0.02, 0.50, up));
+    col = mix(col, body, smoothstep(0.42, 0.80, up));
+    col = mix(col, lift, smoothstep(0.74, 1.00, up) * 0.90);
+
+    /* the light drift — two slow, low-amplitude washes riding the UVs, so they
+       travel with the surface as it turns */
+    float w1 = 0.5 + 0.5 * sin(vUv.x * 6.2831 + uTime * 0.15);
+    float w2 = 0.5 + 0.5 * sin(vUv.x * 12.566 - uTime * 0.10 + 1.9);
+    col = mix(col, shade, w1 * 0.13);
+    col = mix(col, vec3(0.545, 0.635, 0.792), w2 * 0.10);
+
+    vec3 L = normalize(vec3(-0.40, 0.82, 0.76));
+    vec3 H = normalize(L + vView);
+
+    /* broad sheen, then the tight hotspot that sells it as glass */
+    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 16.0) * 0.20;
+    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 240.0) * 1.00;
+
+    /* bounce light low on the far side */
+    vec3 B = normalize(vec3(0.64, -0.62, 0.55));
+    col += vec3(0.90, 0.93, 1.0) * pow(max(dot(vN, normalize(B + vView)), 0.0), 110.0) * 0.45;
+
+    /* thin bright rim — the giveaway of a glass edge */
+    float fres = pow(1.0 - max(dot(vN, vView), 0.0), 3.2);
+    col = mix(col, vec3(1.0), fres * 0.68);
+
+    gl_FragColor = vec4(col, 1.0);
   }
-  x.filter = 'none'
-
-  const map = new THREE.CanvasTexture(c)
-  map.colorSpace = THREE.SRGBColorSpace
-  map.wrapS = THREE.RepeatWrapping
-  map.wrapT = THREE.ClampToEdgeWrapping
-
-  const env = new THREE.CanvasTexture(c)
-  env.mapping = THREE.EquirectangularReflectionMapping
-  env.colorSpace = THREE.SRGBColorSpace
-
-  cache = { map, env }
-  return cache
-}
+`
 
 /* degrees per second — frame-rate independent, so a 120Hz display doesn't
-   spin it twice as fast as a 60Hz one */
-export default function Sphere3D({ size = 128, degPerSec = 34 }) {
+   spin it twice as fast as a 60Hz one. Kept low; the motion should be felt
+   rather than watched. */
+export default function Sphere3D({ size = 128, degPerSec = 10 }) {
   const host = useRef(null)
 
   useEffect(() => {
@@ -98,44 +94,30 @@ export default function Sphere3D({ size = 128, degPerSec = 34 }) {
     el.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
+    /* 3.38 leaves a hair of margin — nothing clips at the edges, and the
+       sphere still nearly fills its ring */
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100)
-    camera.position.z = 3.15
+    camera.position.z = 3.38
 
-    const geometry = new THREE.SphereGeometry(1, 64, 48)
-    const material = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      roughness: 0.38,
-      metalness: 0,
-      clearcoat: 1,
-      clearcoatRoughness: 0.14,
-      envMapIntensity: 0.55,
+    const geometry = new THREE.SphereGeometry(1, 96, 64)
+    const uniforms = { uTime: { value: 0 } }
+    const material = new THREE.ShaderMaterial({
+      vertexShader: VERT,
+      fragmentShader: FRAG,
+      uniforms,
     })
     const sphere = new THREE.Mesh(geometry, material)
-    /* tipped slightly so the swirl reads as a band rather than a stripe */
-    sphere.rotation.z = 0.28
+    sphere.rotation.z = 0.2
     scene.add(sphere)
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.98))
-    const key = new THREE.DirectionalLight(0xffffff, 1.35)
-    key.position.set(-1.4, 1.7, 2.4)
-    scene.add(key)
-    /* cool rim from behind so the edge keeps the glassy highlight */
-    const rim = new THREE.DirectionalLight(0xdfe6f5, 0.9)
-    rim.position.set(1.6, -0.8, -1.4)
-    scene.add(rim)
 
     let raf
     let live = true
-    let visible = true
     const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0 })
-    io.observe(el)
-
-    const { map, env } = marbleTexture()
-    material.map = map
-    material.envMap = env
-    material.needsUpdate = true
+    /* Paused on tab visibility rather than IntersectionObserver: these screens
+       arrive via a transform rather than a scroll, so IO can latch to "not
+       visible" on mount and never fire again, silently freezing the sphere. */
+    const awake = () => document.visibilityState === 'visible'
 
     const rate = (degPerSec * Math.PI) / 180
     let last = performance.now()
@@ -143,8 +125,11 @@ export default function Sphere3D({ size = 128, degPerSec = 34 }) {
       if (!live) return
       const dt = Math.min((now - last) / 1000, 0.05)
       last = now
-      if (visible) {
-        if (!still) sphere.rotation.y += rate * dt
+      if (awake()) {
+        if (!still) {
+          sphere.rotation.y += rate * dt
+          uniforms.uTime.value += dt
+        }
         renderer.render(scene, camera)
       }
       raf = requestAnimationFrame(frame)
@@ -154,7 +139,6 @@ export default function Sphere3D({ size = 128, degPerSec = 34 }) {
     return () => {
       live = false
       cancelAnimationFrame(raf)
-      io.disconnect()
       geometry.dispose()
       material.dispose()
       renderer.dispose()

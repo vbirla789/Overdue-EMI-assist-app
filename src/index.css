@@ -224,7 +224,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 0 16px; width: 100%; }
 .in-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 /* 177:107054 — sizing only; the ring itself is defined once further down */
-.in-orb { width: 128px; height: 128px; padding: 4px; }
+.in-orb { width: 128px; height: 128px; padding: 2px; }
 .in-id { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .in-pill {
   border: 1px solid #e3e3e3; border-radius: 20px; padding: 6px 16px;
@@ -330,7 +330,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   border-radius: 90px; border: 1px solid #e3e3e3; background: transparent;
   overflow: hidden; flex: none;
 }
-.fx-orb-96 { width: 128px; height: 128px; padding: 4px; }
+.fx-orb-96 { width: 128px; height: 128px; padding: 2px; }
 .fx-orb-40 { width: 40px; height: 40px; padding: 2px; }
 
 /* ---- loading (168:3922) ---- */
