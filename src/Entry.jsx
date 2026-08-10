@@ -21,7 +21,7 @@ const A = {
   statusRight: '/figma/statusbar-right.svg',
   chevron2: '/figma/chevron2.svg',
   separator2: '/figma/separator2.svg',
-  pointer: '/figma/pointer2.svg',
+  pointer: '/figma/pointer.svg',
   iPay: '/figma/i-pay.svg',
   iDate: '/figma/i-date.svg',
   iRm: '/figma/i-rm.svg',
