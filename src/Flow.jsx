@@ -232,17 +232,15 @@ export function Reschedule({ go, onPick, onClose }) {
           initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: EASE }}
         >
-          <div className="fx-agent-head">
-            <div className="fx-agent-row">
-              <motion.div className="fx-orb-40" layoutId="nia-orb"><Sphere3D size={40} /></motion.div>
-              <div className="fx-agent-name">
-                <motion.span layoutId="nia-name" className="fx-title-16 nia-name">Nia AI</motion.span>
-                <span className="fx-sub-14">Move the date</span>
-              </div>
-            </div>
-            <motion.button className="fx-close" onClick={onClose} aria-label="Close" {...tap}>
-              <span className="fx-cross"><img src={F.cross} alt="" /></span>
+          <div className="fx-agent-row">
+            <motion.button className="fx-back" onClick={onClose} aria-label="Back" {...tap}>
+              <span className="fx-chev flip"><img src={F.chevron} alt="" /></span>
             </motion.button>
+            <motion.div className="fx-orb-40" layoutId="nia-orb"><Sphere3D size={40} /></motion.div>
+            <div className="fx-agent-name">
+              <motion.span layoutId="nia-name" className="fx-title-16 nia-name">Nia AI</motion.span>
+              <span className="fx-sub-14">Move the date</span>
+            </div>
           </div>
           <img className="fx-sep" src={F.sepDashed} alt="" />
         </motion.div>
@@ -300,17 +298,15 @@ export function Agent({ onClose }) {
           initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: EASE }}
         >
-          <div className="fx-agent-head">
-            <div className="fx-agent-row">
-              <div className="fx-avatar"><img src={F.avatar} alt="" /></div>
-              <div className="fx-agent-name">
-                <span className="fx-title-16">Ayush Sehgal (RM)</span>
-                <span className="fx-sub-14">online</span>
-              </div>
-            </div>
-            <motion.button className="fx-close" onClick={onClose} aria-label="Close" {...tap}>
-              <span className="fx-cross"><img src={F.cross} alt="" /></span>
+          <div className="fx-agent-row">
+            <motion.button className="fx-back" onClick={onClose} aria-label="Back" {...tap}>
+              <span className="fx-chev flip"><img src={F.chevron} alt="" /></span>
             </motion.button>
+            <div className="fx-avatar"><img src={F.avatar} alt="" /></div>
+            <div className="fx-agent-name">
+              <span className="fx-title-16">Ayush Sehgal (RM)</span>
+              <span className="fx-sub-14">online</span>
+            </div>
           </div>
           <img className="fx-sep" src={F.sepChat} alt="" />
         </motion.div>

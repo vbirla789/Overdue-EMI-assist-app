@@ -442,6 +442,15 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-pad { flex: 1 0 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 20px 0; width: 100%; }
 .fx-agent { display: flex; flex-direction: column; gap: 12px; justify-content: center; width: 100%; flex: none; }
 .fx-agent-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* back control leads the header, ahead of the avatar */
+.fx-back {
+  width: 40px; height: 40px; flex: none; background: #fff; border: 1px solid #ebebeb;
+  border-radius: 20px; display: flex; align-items: center; justify-content: center;
+}
+.fx-chev { width: 20px; height: 20px; flex: none; position: relative; overflow: hidden; display: block; }
+.fx-chev img { position: absolute; top: 20.83%; bottom: 20.83%; left: 33.33%; right: 33.33%; width: 33.34%; height: 58.34%; }
+.fx-chev.flip { transform: rotate(180deg); }
+.fx-chev.flip img { filter: brightness(0); }
 .fx-agent-row { display: flex; gap: 12px; align-items: center; }
 .fx-agent-name { display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
 .fx-avatar { width: 40px; height: 40px; border-radius: 90px; background: #fff; padding: 1px; overflow: hidden; box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.12); flex: none; }

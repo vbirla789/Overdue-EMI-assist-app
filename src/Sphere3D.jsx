@@ -30,41 +30,54 @@ const FRAG = `
   varying vec3 vN;
   varying vec3 vView;
 
+  /* one soft diagonal sheet of ink, fully feathered so it has no edge */
+  float sheet(vec2 uv, float phase, float thick, float tilt) {
+    float y = 0.50
+      + tilt * (uv.x - 0.5)
+      + 0.085 * sin(uv.x * 6.2831 + phase)
+      + 0.032 * sin(uv.x * 12.566 - phase * 0.7);
+    return smoothstep(thick, 0.0, abs(uv.y - y));
+  }
+
   void main() {
-    /* silver crown falling into a dark navy base */
-    vec3 lift  = vec3(0.949, 0.953, 0.965);
-    vec3 body  = vec3(0.796, 0.808, 0.835);
-    vec3 shade = vec3(0.353, 0.380, 0.447);
-    vec3 core  = vec3(0.204, 0.224, 0.286);
+    /* Near-white glass shell. The body is kept very light so the swirl reads
+       as something suspended inside rather than painted on the surface. */
+    vec3 glass = vec3(0.961, 0.968, 0.980);
+    vec3 cool  = vec3(0.874, 0.890, 0.918);
+    vec3 slate = vec3(0.478, 0.510, 0.596);
+    vec3 navy  = vec3(0.216, 0.243, 0.337);
 
-    /* Form comes from the world normal, not the UVs, so the light stays where
-       it is while the sphere rotates — otherwise the highlight would swim. */
     float up = clamp(vN.y * 0.5 + 0.5, 0.0, 1.0);
-    vec3 col = mix(core, shade, smoothstep(0.02, 0.50, up));
-    col = mix(col, body, smoothstep(0.42, 0.80, up));
-    col = mix(col, lift, smoothstep(0.74, 1.00, up) * 0.90);
+    vec3 col = mix(cool, glass, smoothstep(0.10, 0.85, up));
 
-    /* the light drift — two slow, low-amplitude washes riding the UVs, so they
-       travel with the surface as it turns */
-    float w1 = 0.5 + 0.5 * sin(vUv.x * 6.2831 + uTime * 0.15);
-    float w2 = 0.5 + 0.5 * sin(vUv.x * 12.566 - uTime * 0.10 + 1.9);
-    col = mix(col, shade, w1 * 0.13);
-    col = mix(col, vec3(0.545, 0.635, 0.792), w2 * 0.10);
+    /* The ink lives in UV space, so it travels with the surface as the mesh
+       turns — that rotation is what makes the sphere feel alive. Three
+       feathered sheets at different tilts; depth only where they overlap. */
+    float i1 = sheet(vUv,                     uTime * 0.30,       0.150, -0.26) * 0.62;
+    float i2 = sheet(vUv + vec2(0.0, 0.052),  uTime * 0.23 + 1.8, 0.115, -0.32) * 0.50;
+    float i3 = sheet(vUv - vec2(0.0, 0.046),  uTime * 0.37 + 3.4, 0.088, -0.19) * 0.40;
+    float ink = clamp(i1 + i2 + i3, 0.0, 1.0);
+
+    /* fades toward the silhouette, as if seen through the curve of the glass */
+    ink *= 0.35 + 0.65 * max(dot(vN, vView), 0.0);
+
+    col = mix(col, slate, ink * 0.88);
+    col = mix(col, navy, pow(ink, 2.1) * 0.86);
 
     vec3 L = normalize(vec3(-0.40, 0.82, 0.76));
     vec3 H = normalize(L + vView);
 
     /* broad sheen, then the tight hotspot that sells it as glass */
-    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 16.0) * 0.20;
-    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 240.0) * 1.00;
+    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 18.0) * 0.16;
+    col += vec3(1.0) * pow(max(dot(vN, H), 0.0), 260.0) * 0.85;
 
     /* bounce light low on the far side */
     vec3 B = normalize(vec3(0.64, -0.62, 0.55));
-    col += vec3(0.90, 0.93, 1.0) * pow(max(dot(vN, normalize(B + vView)), 0.0), 110.0) * 0.45;
+    col += vec3(0.90, 0.93, 1.0) * pow(max(dot(vN, normalize(B + vView)), 0.0), 120.0) * 0.34;
 
     /* thin bright rim — the giveaway of a glass edge */
-    float fres = pow(1.0 - max(dot(vN, vView), 0.0), 3.2);
-    col = mix(col, vec3(1.0), fres * 0.68);
+    float fres = pow(1.0 - max(dot(vN, vView), 0.0), 3.0);
+    col = mix(col, vec3(1.0), fres * 0.72);
 
     gl_FragColor = vec4(col, 1.0);
   }
@@ -73,7 +86,7 @@ const FRAG = `
 /* degrees per second — frame-rate independent, so a 120Hz display doesn't
    spin it twice as fast as a 60Hz one. Kept low; the motion should be felt
    rather than watched. */
-export default function Sphere3D({ size = 128, degPerSec = 10 }) {
+export default function Sphere3D({ size = 128, degPerSec = 16 }) {
   const host = useRef(null)
 
   useEffect(() => {
