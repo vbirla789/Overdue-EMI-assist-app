@@ -239,24 +239,27 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   display: flex; flex-direction: column; align-items: center;
   filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.06));
 }
-.in-pointer { width: 44px; height: 6px; display: block; margin-bottom: -0.5px; }
-/* 177:107059 — late state: amber, and the body radius drops to 4px */
+/* the export is 44x9 and carries its own border stroke; pulled down so its
+   base overlaps the tooltip's top border rather than sitting on it */
+.in-pointer { width: 44px; height: 9px; display: block; margin-bottom: -1.5px; position: relative; z-index: 2; }
+/* 194:228990 — "before 5 days" state: warm off-white body inside a pale
+   yellow border, with the amber softened from #e06900 to #cc8500 */
 .in-tip-body {
-  background: #fff; border-radius: 4px; padding: 8px 12px 8px 10px;
-  display: flex; align-items: center; gap: 4px;
+  background: #fdfbf6; border: 1px solid #ffeb99; border-radius: 4px;
+  padding: 8px 12px 8px 10px; display: flex; align-items: center; gap: 4px;
 }
 .in-dot {
   width: 16px; height: 16px; flex: none; display: flex; align-items: center; justify-content: center;
 }
 .in-dot i {
-  width: 12px; height: 12px; border-radius: 999px; background: rgba(224, 105, 0, 0.3);
+  width: 12px; height: 12px; border-radius: 999px; background: rgba(204, 133, 0, 0.3);
   display: flex; align-items: center; justify-content: center; position: relative;
 }
 .in-dot i::after {
-  content: ''; width: 8px; height: 8px; border-radius: 999px; background: #e06900;
+  content: ''; width: 8px; height: 8px; border-radius: 999px; background: #cc8500;
   box-shadow: inset 0 2.578px 0 0 rgba(255, 255, 255, 0.35);
 }
-.in-tip-text { font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.25px; color: #e06900; white-space: nowrap; }
+.in-tip-text { font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.25px; color: #cc8500; white-space: nowrap; }
 
 .in-main { display: flex; flex-direction: column; gap: 28px; width: 100%; }
 .in-title {

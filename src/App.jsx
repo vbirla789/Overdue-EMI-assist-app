@@ -51,7 +51,7 @@ const NAV = [
 
 const NOTES = {
   'toast': 'Built 1:1 from Figma (175:73758). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. Close sits first because a user who is not ready to deal with it should not have to hunt for the way out.',
-  'intro': 'Built 1:1 from Figma (185:173518). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
+  'intro': 'Built 1:1 from Figma (194:228975). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
   'loading': 'Built 1:1 from Figma (187:184623). The hero does not move — the sphere is literally the same element as on the intro, so only the lower half changes and the assistant never appears to restart. When the checks finish it shrinks into the reschedule header.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
   'resched': 'Built 1:1 from Figma (185:162423). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
