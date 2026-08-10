@@ -193,12 +193,19 @@ const DAYS = [
 /* Defined outside Reschedule on purpose. Declaring it inside makes React see
    a brand-new component type on every render, so selecting a date remounted
    all five cells and replayed their enter animation. */
-function Cell({ day, sel, setSel }) {
+/* Animates on its own rather than via variants. It used to inherit a variant
+   label from a stagger parent; once that parent went away the label never
+   arrived, so under AnimatePresence the cell resolved to its initial state and
+   stayed at opacity 0 — invisible when reached through the flow, though fine
+   on a direct load where no initial is applied. */
+function Cell({ day, sel, setSel, i }) {
   return (
     <motion.button
       className={`fx-day ${sel === day.d ? 'on' : ''}`}
       onClick={() => setSel(day.d)}
-      variants={riseItem}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: EASE, delay: 0.06 + i * 0.045 }}
       whileTap={{ scale: 0.96 }}
     >
       <span className="fx-day-n">{day.d}</span>
@@ -216,7 +223,7 @@ export function PickerBody({ go, onPick }) {
     const day = DAYS.find((x) => x.d === d)
     setTimeout(() => onPick?.(day), 420)
   }
-  const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={choose} />
+  const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={choose} i={i} />
 
   return (
       <div className="fx-pick">
