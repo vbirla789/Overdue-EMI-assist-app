@@ -115,7 +115,7 @@ export default function App() {
             sphere and the Nia pill stay mounted the whole time; only the block
             beneath them is swapped, so the assistant never re-animates. */}
         {SHARED.has(screen) ? (
-          <IntroShell onBack={() => setScreen('intro')}>
+          <IntroShell onBack={() => setScreen('intro')} tight={screen === 'resched'}>
             <NiaHero tooltip={screen !== 'resched'} />
             {/* popLayout takes the outgoing block out of flow, so the container
                 never collapses to nothing between states — with mode="wait" the

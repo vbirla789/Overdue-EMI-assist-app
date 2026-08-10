@@ -116,21 +116,26 @@ export function NiaHero({ tooltip = true }) {
         >
           <motion.span layoutId="nia-name" className="nia-name">Nia AI</motion.span>
         </motion.span>
-        {/* The picker drops the status line, but the space it occupies is kept
-            so the hero never changes height — otherwise everything below it
-            jumps as the tooltip comes and goes. It fades rather than
-            unmounting. */}
+        {/* The picker drops the status line. Rather than unmounting it — which
+            snapped the layout — the wrapper animates its own height to zero and
+            eats the flex gap, so the collapse eases instead of jumping. */}
         <motion.div
-          className="in-tooltip"
+          className="in-tip-wrap"
           initial={{ opacity: 0 }}
-          animate={{ opacity: tooltip ? 1 : 0 }}
-          transition={{ duration: 0.28, ease: EASE, delay: tooltip ? 0.2 : 0 }}
+          animate={{
+            opacity: tooltip ? 1 : 0,
+            height: tooltip ? 42 : 0,
+            marginTop: tooltip ? 0 : -8,
+          }}
+          transition={{ duration: 0.3, ease: EASE, delay: tooltip ? 0.18 : 0 }}
           style={{ pointerEvents: tooltip ? 'auto' : 'none' }}
         >
-          <img className="in-pointer" src={A.pointer} alt="" />
-          <div className="in-tip-body">
-            <span className="in-dot"><i /></span>
-            <span className="in-tip-text">Your installment is 3 days late</span>
+          <div className="in-tooltip">
+            <img className="in-pointer" src={A.pointer} alt="" />
+            <div className="in-tip-body">
+              <span className="in-dot"><i /></span>
+              <span className="in-tip-text">Your installment is 3 days late</span>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -138,7 +143,7 @@ export function NiaHero({ tooltip = true }) {
   )
 }
 
-export function IntroShell({ children, onBack }) {
+export function IntroShell({ children, onBack, tight }) {
   return (
     <div className="in dotgrid">
       <div className="in-header">
@@ -161,7 +166,7 @@ export function IntroShell({ children, onBack }) {
           propagated to every motion descendant and overrides their own props,
           which left the sphere, the pill and the tooltip stranded at their
           initial values. Each descendant animates itself instead. */}
-      <motion.div className="in-body" layout>
+      <motion.div className={`in-body ${tight ? 'tight' : ''}`} layout>
         {children}
       </motion.div>
       <div className="in-homebar"><i /></div>

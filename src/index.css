@@ -222,6 +222,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .in-back .fig-chevron img { filter: brightness(0); }
 
 .in-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 0 16px; width: 100%; }
+/* the picker sits closer to the hero, since the status line has collapsed */
+.in-body.tight { gap: 32px; }
 .in-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 /* 177:107054 — sizing only; the ring itself is defined once further down */
 .in-orb { width: 128px; height: 128px; padding: 2px; }
@@ -233,6 +235,10 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 /* shared between the pill and the reschedule header, so the name travels
    with the sphere rather than reappearing in a new place */
 .nia-name { display: block; white-space: nowrap; }
+/* collapses to zero height on the picker, so the hero carries no dead space
+   under the pill once the status line is gone */
+.in-tip-wrap { overflow: hidden; display: flex; justify-content: center; flex: none; }
+
 /* pointer + body is a compound shape, so the shadow has to follow the alpha
    outline — box-shadow would draw a rectangle around the pair */
 .in-tooltip {
