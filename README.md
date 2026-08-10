@@ -7,7 +7,7 @@ npm install
 npm run dev     # http://localhost:5210
 ```
 
-The prototype opens on the modal and clicks through end to end. There is no
+The prototype opens on the intro screen and clicks through end to end. There is no
 visible navigation — states off the happy path are reached by deep link.
 
 **Deep links** — append `?s=<id>` to the URL, e.g. `?s=escalate:pause`,

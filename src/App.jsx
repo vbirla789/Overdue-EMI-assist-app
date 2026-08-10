@@ -7,14 +7,13 @@ import { screenSlide, sharedFade } from './motion'
 const SHARED = new Set(['intro', 'loading', 'resched'])
 import Part1 from './Part1'
 import Part2 from './Part2'
-import { Toast, Sheet, Intro } from './Entry'
+import { Sheet, Intro } from './Entry'
 import { Loading, Reschedule, Agent, Success } from './Flow'
 
 const NAV = [
   {
     label: 'Part 1 — assistant flow',
     items: [
-      ['toast', 'Modal', 'From Figma — modal over the app'],
       ['intro', 'Intro screen', 'From Figma — full screen'],
       ['loading', 'Loading — running', 'From Figma — checks resolve one by one'],
       ['loading:3', 'Loading — all done', 'From Figma — final state'],
@@ -50,11 +49,10 @@ const NAV = [
 ]
 
 const NOTES = {
-  'toast': 'Built 1:1 from Figma (175:73758). Blurred app behind, so the user can see what they were doing and that nothing has been taken over. Close sits first because a user who is not ready to deal with it should not have to hunt for the way out.',
   'intro': 'Built 1:1 from Figma (194:228975). The two self-serve options sit side by side; the RM route stays full width below a rule, so the layout says it is a different kind of thing before the copy does.',
-  'loading': 'Built 1:1 from Figma (187:184623). The hero does not move — the sphere is literally the same element as on the intro, so only the lower half changes and the assistant never appears to restart. When the checks finish it shrinks into the reschedule header.',
+  'loading': 'Built 1:1 from Figma (187:184623). The hero does not move — the sphere is literally the same element as on the intro, so only the lower half changes and the assistant never appears to restart. When the checks finish the dates take their place — the sphere still does not move.',
   'loading:3': 'The settled state. All three findings are readable, and the CIBIL line answers the thing people are most afraid of before they ask.',
-  'resched': 'Built 1:1 from Figma (200:273399). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
+  'resched': 'Built 1:1 from Figma (205:295611). Nothing is preselected, so the assistant never appears to have chosen for you. The "or" rule separates what the assistant can do from what needs a person.',
   'success': 'Built 1:1 from Figma (180:118152). The mark lands first with a little weight, then the copy, then the receipt — so the relief arrives before the detail. Late fee ₹0 is the line that matters most to someone who was late.',
   'moved': 'Built 1:1 from Figma (183:129204). Same shell as the paid outcome, different truth — the EMI is still owed, just later, so the subline confirms the lateness has stopped rather than claiming nothing is due. The date comes from whichever day the user picked.',
   'agent': 'Built 1:1 from Figma (184:151339). The handoff is a thread, not a status screen — Ayush opens with your case already in hand, so the promise is visible rather than described.',
@@ -84,7 +82,7 @@ const NOTES = {
    Keys are the same ids listed in NAV. */
 const deepLink = () => {
   const s = new URLSearchParams(window.location.search).get('s')
-  return s && ALL_SCREENS.has(s) ? s : 'toast'
+  return s && ALL_SCREENS.has(s) ? s : 'intro'
 }
 const ALL_SCREENS = new Set(NAV.flatMap((g) => g.items.map(([id]) => id)))
 
@@ -108,8 +106,7 @@ export default function App() {
         <LayoutGroup>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div className="wb-stage" key={SHARED.has(screen) ? 'shared' : screen} {...(SHARED.has(screen) ? sharedFade : screenSlide)}>
-            {screen === 'toast' ? <Toast onOpen={() => setScreen('intro')} />
-              : screen === 'intro' ? <Intro go={go} onBack={() => setScreen('toast')} />
+            {screen === 'intro' ? <Intro go={go} onBack={() => setScreen('intro')} />
               : screen === 'loading' ? <Loading key="run" onBack={() => setScreen('intro')} onDone={() => setScreen('resched')} />
               : screen === 'loading:3' ? <Loading key="done" step={3} onBack={() => setScreen('intro')} />
               : screen === 'resched' ? <Reschedule go={go} onClose={() => setScreen('intro')} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />

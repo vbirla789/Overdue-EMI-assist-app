@@ -44,31 +44,6 @@ function Frame({ children, blur, center }) {
   )
 }
 
-/* ---------- 175:73758 — modal over the app ---------- */
-export function Toast({ onOpen }) {
-  return (
-    <Frame blur={4} center>
-      <motion.div
-        className="fig-modal"
-        initial={{ opacity: 0, scale: 0.94, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
-      >
-        <img className="fig-modal-icon" src={A.toastIcon} alt="" />
-        <div className="fig-modal-text">
-          <p className="fig-modal-title">₹45,000 EMI is 3 days late</p>
-          <p className="fig-modal-sub">Pay it or move the date</p>
-        </div>
-        <div className="fig-modal-actions">
-          <motion.button className="fig-modal-btn ghost" onClick={onOpen} {...tap}>Close</motion.button>
-          <motion.button className="fig-modal-btn solid" onClick={onOpen} {...tap}>See options</motion.button>
-        </div>
-      </motion.div>
-    </Frame>
-  )
-}
-
 /* ---------- 166:3429 — full-screen intro ---------- */
 /* Each card carries its own gradient and a grid vector clipped by the card
    edge — mint for pay, blue for reschedule, cream for the RM route. */
@@ -118,7 +93,7 @@ function IntroCard({ o, go, stacked }) {
 /* Shared across the intro and the loading state. The orb carries a layoutId
    so Framer treats it as one element travelling between screens — it holds
    still from intro to loading, then shrinks into the reschedule header. */
-export function NiaHero({ animate = true }) {
+export function NiaHero({ animate = true, tooltip = true }) {
   return (
     <motion.div className="in-hero">
       <motion.div className="in-orb" layoutId="nia-orb" variants={animate ? orbIn : undefined}>
@@ -129,13 +104,17 @@ export function NiaHero({ animate = true }) {
         <motion.span className="in-pill" variants={animate ? fadeItem : undefined}>
           <motion.span layoutId="nia-name" className="nia-name">Nia AI</motion.span>
         </motion.span>
-        <motion.div className="in-tooltip" variants={animate ? fadeItem : undefined}>
-          <img className="in-pointer" src={A.pointer} alt="" />
-          <div className="in-tip-body">
-            <span className="in-dot"><i /></span>
-            <span className="in-tip-text">Your installment is 3 days late</span>
-          </div>
-        </motion.div>
+        {/* the picker drops the status line — by then the user is choosing a
+            date, not being told what's wrong */}
+        {tooltip && (
+          <motion.div className="in-tooltip" variants={animate ? fadeItem : undefined}>
+            <img className="in-pointer" src={A.pointer} alt="" />
+            <div className="in-tip-body">
+              <span className="in-dot"><i /></span>
+              <span className="in-tip-text">Your installment is 3 days late</span>
+            </div>
+          </motion.div>
+        )}
       </motion.div>
     </motion.div>
   )

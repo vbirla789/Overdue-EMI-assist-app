@@ -224,62 +224,41 @@ export function Reschedule({ go, onPick, onClose }) {
   }
   const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={choose} />
 
+  /* Same shell as the intro and the loading state — the sphere stays put in
+     the hero at 128px and the dates simply take the place the checks were in,
+     so the assistant never appears to move or restart. */
   return (
-    <div className="fx fx-resched dotgrid">
-      <StatusBar />
-      <div className="fx-pad">
-        <motion.div
-          className="fx-agent"
-          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: EASE }}
-        >
-          <div className="fx-agent-row">
-            <motion.button className="fx-back" onClick={onClose} aria-label="Back" {...tap}>
-              <span className="fx-chev flip"><img src={F.chevron} alt="" /></span>
-            </motion.button>
-            <motion.div className="fx-orb-40" layoutId="nia-orb"><Sphere3D size={40} /></motion.div>
-            <div className="fx-agent-name">
-              <motion.span layoutId="nia-name" className="fx-title-16 nia-name">Nia AI</motion.span>
-              <span className="fx-sub-14">Move the date</span>
-            </div>
-          </div>
-          <img className="fx-sep" src={F.sepDashed} alt="" />
-        </motion.div>
-
-        <div className="fx-resched-body">
-          <motion.div className="fx-resched-top" initial="initial" animate="animate" {...stagger(0.05, 0.1)}>
-            <motion.div className="fx-pick">
-              <motion.img className="fx-cal" src={F.calBig} alt="" variants={orbIn} />
-              <motion.p className="fx-title-24" variants={riseItem}>Which day works?</motion.p>
-              <motion.div className="fx-days">
-                <motion.div className="fx-day-row">{cell(0)}{cell(1)}</motion.div>
-                <motion.div className="fx-day-row">{cell(2)}{cell(3)}</motion.div>
-                <motion.div className="fx-day-row single">{cell(4)}</motion.div>
-              </motion.div>
-            </motion.div>
-
-            <motion.div className="fx-or" variants={fadeItem}>
-              <img src={F.sepThin} alt="" />
-              <span className="fx-sub-14">or</span>
-              <img src={F.sepThin} alt="" />
-            </motion.div>
-
-            <motion.button className="fx-card" onClick={() => go('agent')} variants={riseItem} {...tap}>
-              <span className="fx-card-grid"><img src={F.gridCream} alt="" /></span>
-              <span className="fx-card-main">
-                <span className="fx-card-icon"><img src={F.iRm} alt="" /></span>
-                <span className="fx-card-text">
-                  <span className="fx-title-16">Connect to your RM</span>
-                  <span className="fx-sub-14">For anything longer than 5 days</span>
-                </span>
-              </span>
-              <span className="fx-chev"><img src={F.chevron} alt="" /></span>
-            </motion.button>
-          </motion.div>
+    <IntroShell onBack={onClose} stagger={stagger(0.05, 0.08)}>
+      <NiaHero animate={false} tooltip={false} />
+      <motion.div className="fx-pick" layout
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.32, ease: EASE, delay: 0.05 }}
+      >
+        <p className="fx-title-24">Which day works?</p>
+        <div className="fx-days">
+          <div className="fx-day-row">{cell(0)}{cell(1)}{cell(2)}</div>
+          <div className="fx-day-row centred">{cell(3)}{cell(4)}</div>
         </div>
-      </div>
-      <HomeBar />
-    </div>
+
+        <div className="fx-or">
+          <img src={F.sepThin} alt="" />
+          <span className="fx-sub-14">or</span>
+          <img src={F.sepThin} alt="" />
+        </div>
+
+        <motion.button className="fx-card" onClick={() => go('agent')} {...tap}>
+          <span className="fx-card-grid"><img src={F.gridCream} alt="" /></span>
+          <span className="fx-card-main">
+            <span className="fx-card-icon"><img src={F.iRm} alt="" /></span>
+            <span className="fx-card-text">
+              <span className="fx-title-16">Connect to your RM</span>
+              <span className="fx-sub-14">For anything longer than 5 days</span>
+            </span>
+          </span>
+          <span className="fx-chev"><img src={F.chevron} alt="" /></span>
+        </motion.button>
+      </motion.div>
+    </IntroShell>
   )
 }
 
