@@ -63,7 +63,7 @@ function IntroCard({ o, go, stacked }) {
   const grid = <span className={`in-card-grid ${stacked ? '' : 'wide'}`}><img src={o.grid} alt="" /></span>
   if (stacked) {
     return (
-      <motion.button className={`in-card stacked ${o.tone}`} onClick={() => go(o.go)} variants={riseItem} {...tap}>
+      <motion.button className={`in-card stacked ${o.tone}`} onClick={() => go(o.go)} {...tap}>
         {grid}
         <span className="in-card-stack">
           <span className="in-card-icon"><img src={o.icon} alt="" /></span>
@@ -76,7 +76,7 @@ function IntroCard({ o, go, stacked }) {
     )
   }
   return (
-    <motion.button className={`in-card ${o.tone}`} onClick={() => go(o.go)} variants={riseItem} {...tap}>
+    <motion.button className={`in-card ${o.tone}`} onClick={() => go(o.go)} {...tap}>
       {grid}
       <span className="in-card-main">
         <span className="in-card-icon"><img src={o.icon} alt="" /></span>
@@ -144,29 +144,28 @@ export function IntroShell({ children, onBack, stagger: st }) {
   )
 }
 
-export function Intro({ go, onBack }) {
+/* Only the block below the hero. The shell and the sphere are owned by App and
+   stay mounted, so nothing about the assistant re-animates when this swaps. */
+export function IntroBody({ go }) {
   const [a, b, c] = INTRO_OPTIONS
   return (
-    <IntroShell onBack={onBack} stagger={stagger(0.07, 0.08)}>
-      <NiaHero />
-      <motion.div className="in-main" layout>
-        <motion.p className="in-title" variants={riseItem}>Three ways to clear this</motion.p>
-        <motion.div className="in-options">
-          <motion.div className="in-options-group">
-            <IntroCard o={a} go={go} stacked />
-            <IntroCard o={b} go={go} stacked />
-          </motion.div>
-          {/* 202:284566 — an "or" rule rather than a plain separator, so the
-              RM route reads as an alternative to the pair above it */}
-          <motion.div className="fx-or" variants={fadeItem}>
-            <img src={A.sepThin} alt="" />
-            <span className="fig-sub-14">or</span>
-            <img src={A.sepThin} alt="" />
-          </motion.div>
-          <IntroCard o={c} go={go} />
-        </motion.div>
-      </motion.div>
-    </IntroShell>
+    <div className="in-main">
+      <p className="in-title">Three ways to clear this</p>
+      <div className="in-options">
+        <div className="in-options-group">
+          <IntroCard o={a} go={go} stacked />
+          <IntroCard o={b} go={go} stacked />
+        </div>
+        {/* 202:284566 — an "or" rule rather than a plain separator, so the
+            RM route reads as an alternative to the pair above it */}
+        <div className="fx-or">
+          <img src={A.sepThin} alt="" />
+          <span className="fig-sub-14">or</span>
+          <img src={A.sepThin} alt="" />
+        </div>
+        <IntroCard o={c} go={go} />
+      </div>
+    </div>
   )
 }
 
@@ -180,7 +179,7 @@ const OPTIONS = [
 export function Sheet({ go }) {
   const [a, b, c] = OPTIONS
   const Card = ({ o }) => (
-    <motion.button className="fig-card" onClick={() => go(o.go)} variants={riseItem} {...tap}>
+    <motion.button className="fig-card" onClick={() => go(o.go)} {...tap}>
       <span className="fig-card-main">
         <span className="fig-card-icon"><img src={o.icon} alt="" /></span>
         <span className="fig-card-text">

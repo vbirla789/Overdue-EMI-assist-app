@@ -1,14 +1,22 @@
 import { useState } from 'react'
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
-import { screenSlide, sharedFade } from './motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { screenSlide } from './motion'
 
 /* these three hand the sphere between them, so they share one presence key
    and Framer animates the orb instead of swapping whole screens */
-const SHARED = new Set(['intro', 'loading', 'resched'])
+const SHARED = new Set(['intro', 'loading', 'loading:3', 'resched'])
+
+/* only the block under the hero moves */
+const bodySwap = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] },
+}
 import Part1 from './Part1'
 import Part2 from './Part2'
-import { Sheet, Intro } from './Entry'
-import { Loading, Reschedule, Agent, Success } from './Flow'
+import { Sheet, IntroBody, IntroShell, NiaHero } from './Entry'
+import { LoadingBody, PickerBody, Agent, Success } from './Flow'
 
 const NAV = [
   {
@@ -103,23 +111,34 @@ export default function App() {
       <main className="wb-main">
         <div className="device">
         <div className="device-inner">
-        <LayoutGroup>
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div className="wb-stage" key={SHARED.has(screen) ? 'shared' : screen} {...(SHARED.has(screen) ? sharedFade : screenSlide)}>
-            {screen === 'intro' ? <Intro go={go} onBack={() => setScreen('intro')} />
-              : screen === 'loading' ? <Loading key="run" onBack={() => setScreen('intro')} onDone={() => setScreen('resched')} />
-              : screen === 'loading:3' ? <Loading key="done" step={3} onBack={() => setScreen('intro')} />
-              : screen === 'resched' ? <Reschedule go={go} onClose={() => setScreen('intro')} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />
-              : screen === 'agent' ? <Agent onClose={() => setScreen('intro')} />
-              : screen === 'success' ? <Success onClose={() => setScreen('intro')} />
-              : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('intro')} />
-              : screen === 'sheet' ? <Sheet go={go} />
-              : isP2
-                ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
-                : <Part1 screen={screen} go={go} />}
-          </motion.div>
-        </AnimatePresence>
-        </LayoutGroup>
+        {/* The intro, the checks and the picker are one screen. The shell, the
+            sphere and the Nia pill stay mounted the whole time; only the block
+            beneath them is swapped, so the assistant never re-animates. */}
+        {SHARED.has(screen) ? (
+          <IntroShell onBack={() => setScreen('intro')}>
+            <NiaHero tooltip={screen !== 'resched'} />
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div className="in-swap" key={screen} {...bodySwap}>
+                {screen === 'intro' ? <IntroBody go={go} />
+                  : screen === 'loading' ? <LoadingBody onDone={() => setScreen('resched')} />
+                  : screen === 'loading:3' ? <LoadingBody step={3} />
+                  : <PickerBody go={go} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />}
+              </motion.div>
+            </AnimatePresence>
+          </IntroShell>
+        ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div className="wb-stage" key={screen} {...screenSlide}>
+              {screen === 'agent' ? <Agent onClose={() => setScreen('intro')} />
+                : screen === 'success' ? <Success onClose={() => setScreen('intro')} />
+                : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('intro')} />
+                : screen === 'sheet' ? <Sheet go={go} />
+                : isP2
+                  ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />
+                  : <Part1 screen={screen} go={go} />}
+            </motion.div>
+          </AnimatePresence>
+        )}
         </div>
         </div>
       </main>

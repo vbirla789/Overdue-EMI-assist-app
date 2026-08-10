@@ -47,7 +47,7 @@ const CHECKS = [
   { t: 'CIBIL report', d: 'Nothing reported yet' },
 ]
 
-export function Loading({ onDone, step: fixedStep, onBack }) {
+export function LoadingBody({ onDone, step: fixedStep }) {
   const [step, setStep] = useState(fixedStep ?? 0)
   /* held in a ref so a new callback identity from the parent doesn't restart
      the sequence, and so the effect needs no once-only guard — a guard plus
@@ -66,12 +66,7 @@ export function Loading({ onDone, step: fixedStep, onBack }) {
   }, [step, fixedStep])
 
   return (
-    <IntroShell onBack={onBack} stagger={stagger(0.08, 0.05)}>
-      <NiaHero animate={false} />
-      <motion.div className="fx-checks" layout
-        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.32, ease: EASE, delay: 0.06 }}
-      >
+      <div className="fx-checks">
           <img className="fx-rail" src={F.rail} alt="" />
           <div className="fx-check-list">
             {CHECKS.map((c, i) => {
@@ -108,8 +103,7 @@ export function Loading({ onDone, step: fixedStep, onBack }) {
               )
             })}
         </div>
-      </motion.div>
-    </IntroShell>
+      </div>
   )
 }
 
@@ -213,7 +207,7 @@ function Cell({ day, sel, setSel }) {
   )
 }
 
-export function Reschedule({ go, onPick, onClose }) {
+export function PickerBody({ go, onPick }) {
   const [sel, setSel] = useState(null)
   /* hold on the selected state briefly so the choice is visibly registered
      before the screen changes — otherwise the tap feels unacknowledged */
@@ -224,16 +218,8 @@ export function Reschedule({ go, onPick, onClose }) {
   }
   const cell = (i) => <Cell day={DAYS[i]} sel={sel} setSel={choose} />
 
-  /* Same shell as the intro and the loading state — the sphere stays put in
-     the hero at 128px and the dates simply take the place the checks were in,
-     so the assistant never appears to move or restart. */
   return (
-    <IntroShell onBack={onClose} stagger={stagger(0.05, 0.08)}>
-      <NiaHero animate={false} tooltip={false} />
-      <motion.div className="fx-pick" layout
-        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.32, ease: EASE, delay: 0.05 }}
-      >
+      <div className="fx-pick">
         <p className="fx-title-24">Which day works?</p>
         <div className="fx-days">
           <div className="fx-day-row">{cell(0)}{cell(1)}{cell(2)}</div>
@@ -257,8 +243,7 @@ export function Reschedule({ go, onPick, onClose }) {
           </span>
           <span className="fx-chev"><img src={F.chevron} alt="" /></span>
         </motion.button>
-      </motion.div>
-    </IntroShell>
+      </div>
   )
 }
 
