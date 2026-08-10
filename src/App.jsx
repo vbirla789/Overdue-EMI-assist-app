@@ -78,8 +78,18 @@ const NOTES = {
   'p2:duplicate': 'This user is confused, not transacting. Reassurance and the old receipt — not an error state.',
 }
 
+/* The rail is gone, so the states that aren't on the happy path — the four
+   escalations, the two failures, Part 2 — have no visible entry point. They
+   stay reachable by deep link: ?s=escalate:pause, ?s=p2:partial, and so on.
+   Keys are the same ids listed in NAV. */
+const deepLink = () => {
+  const s = new URLSearchParams(window.location.search).get('s')
+  return s && ALL_SCREENS.has(s) ? s : 'toast'
+}
+const ALL_SCREENS = new Set(NAV.flatMap((g) => g.items.map(([id]) => id)))
+
 export default function App() {
-  const [screen, setScreen] = useState('toast')
+  const [screen, setScreen] = useState(deepLink)
   const [movedTo, setMovedTo] = useState(null)
 
   const go = (s) => {
@@ -92,23 +102,9 @@ export default function App() {
 
   return (
     <div className="wb">
-      <aside className="wb-side">
-        <div className="wb-title">Overdue EMI — Assist</div>
-        <div className="wb-sub">Working prototype. Every state is reachable by clicking inside the phone; this list is just a shortcut.</div>
-
-        {NAV.map((g) => (
-          <div className="wb-group" key={g.label}>
-            <div className="wb-label">{g.label}</div>
-            {g.items.map(([id, t, d]) => (
-              <button key={id} className={`wb-item ${screen === id ? 'on' : ''}`} onClick={() => setScreen(id)}>
-                {t}<small>{d}</small>
-              </button>
-            ))}
-          </div>
-        ))}
-      </aside>
-
       <main className="wb-main">
+        <div className="device">
+        <div className="device-inner">
         <LayoutGroup>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div className="wb-stage" key={SHARED.has(screen) ? 'shared' : screen} {...(SHARED.has(screen) ? sharedFade : screenSlide)}>
@@ -127,7 +123,8 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
         </LayoutGroup>
-        {NOTES[screen] && <div className="wb-note"><b>Why this way — </b>{NOTES[screen]}</div>}
+        </div>
+        </div>
       </main>
     </div>
   )

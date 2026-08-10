@@ -563,7 +563,23 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .wb-item small { display: block; font-size: 11px; color: #6a7080; margin-top: 2px; }
 .wb-item.on small { color: #99a0ae; }
 
-.wb-main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px 24px 80px; gap: 18px; }
+.wb-main {
+  flex: 1; min-height: 100vh; display: flex; align-items: center;
+  justify-content: center; padding: 40px 24px;
+}
+
+/* iPhone mockup — bezel around the screen, centred in the viewport */
+.device {
+  flex: none; padding: 12px; background: #14161c; border-radius: 60px;
+  box-shadow: 0 2px 0 1px #2b2f3a inset, 0 40px 80px rgba(0, 0, 0, .55),
+    0 0 0 1px rgba(255, 255, 255, .06);
+}
+.device-inner { border-radius: 48px; overflow: hidden; position: relative; }
+/* the screens carry their own 24px radius; inside the bezel they take the
+   device's curve instead so the corners meet cleanly */
+.device-inner .fx,
+.device-inner .in,
+.device-inner .fig { border-radius: 48px; }
 .wb-note {
   max-width: 408px; font-size: 12.5px; line-height: 1.6; color: #9aa1af;
   background: #171a21; border: 1px solid #232733; border-radius: 12px; padding: 14px 16px;
@@ -755,8 +771,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 @media (max-width: 760px) {
   body { overflow-x: hidden; }
   .wb { display: block; }
-  .wb-side, .wb-note { display: none; }
-  .wb-main { padding: 0; gap: 0; display: block; }
+  .wb-main { padding: 0; gap: 0; display: block; min-height: 0; }
+
+  /* on a real handset the device is the device — drop the mockup bezel */
+  .device { padding: 0; border-radius: 0; background: none; box-shadow: none; }
+  .device-inner { border-radius: 0; }
+  .device-inner .fx,
+  .device-inner .in,
+  .device-inner .fig { border-radius: 0; }
 
   .fx, .in, .fig, .phone {
     width: 100vw; height: 100vh; height: 100dvh;

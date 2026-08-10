@@ -7,7 +7,12 @@ npm install
 npm run dev     # http://localhost:5210
 ```
 
-Left rail = state index. Everything is also reachable by clicking inside the phone.
+The prototype opens on the modal and clicks through end to end. There is no
+visible navigation — states off the happy path are reached by deep link.
+
+**Deep links** — append `?s=<id>` to the URL, e.g. `?s=escalate:pause`,
+`?s=misread`, `?s=p2:partial`. Ids are listed in the `NAV` array in
+`src/App.jsx`.
 
 ---
 
