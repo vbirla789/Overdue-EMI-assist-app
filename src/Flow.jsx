@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { stagger, riseItem, fadeItem, orbIn, tap, EASE } from './motion'
 import { IntroShell, NiaHero } from './Entry'
+import Sphere3D from './Sphere3D'
 
 /* Part 1 screens, built 1:1 from Figma
    unBox-benchmarking · section 169:7315
@@ -233,7 +234,7 @@ export function Reschedule({ go, onPick, onClose }) {
         >
           <div className="fx-agent-head">
             <div className="fx-agent-row">
-              <motion.div className="fx-orb-40" layoutId="nia-orb"><img src={F.orb} alt="" /></motion.div>
+              <motion.div className="fx-orb-40" layoutId="nia-orb"><Sphere3D size={40} /></motion.div>
               <div className="fx-agent-name">
                 <motion.span layoutId="nia-name" className="fx-title-16 nia-name">Nia AI</motion.span>
                 <span className="fx-sub-14">Move the date</span>

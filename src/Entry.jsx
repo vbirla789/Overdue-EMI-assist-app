@@ -5,6 +5,7 @@
    wrapper between a stagger parent and an animated child is a motion.div. */
 
 import { motion } from 'framer-motion'
+import Sphere3D from './Sphere3D'
 import { toastRise, sheetRise, stagger, riseItem, orbIn, fadeItem, tap } from './motion'
 
 const A = {
@@ -52,7 +53,7 @@ export function Toast({ onOpen }) {
       >
         <img className="fig-modal-icon" src={A.toastIcon} alt="" />
         <div className="fig-modal-text">
-          <p className="fig-modal-title">₹45,000 EMI due today</p>
+          <p className="fig-modal-title">₹45,000 EMI is 3 days late</p>
           <p className="fig-modal-sub">Pay it or move the date</p>
         </div>
         <div className="fig-modal-actions">
@@ -109,7 +110,7 @@ export function NiaHero({ animate = true }) {
   return (
     <motion.div className="in-hero">
       <motion.div className="in-orb" layoutId="nia-orb" variants={animate ? orbIn : undefined}>
-        <img src={A.orb} alt="" />
+        <Sphere3D size={128} />
       </motion.div>
       <motion.div className="in-id" layout>
         {/* the pill chrome cross-fades, the words themselves travel */}
@@ -201,7 +202,7 @@ export function Sheet({ go }) {
           <div className="fig-grabber"><i /></div>
           <motion.div className="fig-sheet" initial="initial" animate="animate" {...stagger(0.06, 0.14)}>
             <motion.div className="fig-sheet-head">
-              <motion.div className="fig-orb" variants={orbIn}><img src={A.orb} alt="" /></motion.div>
+              <motion.div className="fig-orb" variants={orbIn}><Sphere3D size={96} /></motion.div>
               <motion.div className="fig-sheet-title" variants={riseItem}>
                 <p className="fig-title-24">₹45,000 EMI due today</p>
                 <p className="fig-sub-16">No late fee yet</p>
