@@ -21,6 +21,7 @@ const A = {
   statusRight: '/figma/statusbar-right.svg',
   chevron2: '/figma/chevron2.svg',
   separator2: '/figma/separator2.svg',
+  sepThin: '/figma/sep-thin.svg',
   pointer: '/figma/pointer.svg',
   iPay: '/figma/ic-pay.svg',
   iDate: '/figma/ic-date.svg',
@@ -176,7 +177,13 @@ export function Intro({ go, onBack }) {
             <IntroCard o={a} go={go} stacked />
             <IntroCard o={b} go={go} stacked />
           </motion.div>
-          <motion.img className="fig-sep" src={A.separator2} alt="" variants={fadeItem} />
+          {/* 202:284566 — an "or" rule rather than a plain separator, so the
+              RM route reads as an alternative to the pair above it */}
+          <motion.div className="fx-or" variants={fadeItem}>
+            <img src={A.sepThin} alt="" />
+            <span className="fig-sub-14">or</span>
+            <img src={A.sepThin} alt="" />
+          </motion.div>
           <IntroCard o={c} go={go} />
         </motion.div>
       </motion.div>

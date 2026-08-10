@@ -492,9 +492,10 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-day.on { border-color: #000; }
 .fx-day.on .fx-day-w { color: #000; font-weight: 500; }
 
+/* shared by the reschedule picker and the intro's RM route */
 .fx-or { display: flex; gap: 18px; align-items: center; justify-content: center; width: 100%; }
 .fx-or img { flex: 1 0 0; min-width: 0; height: 1.17px; }
-.fx-or .fx-sub-14 { white-space: nowrap; }
+.fx-or > span { white-space: nowrap; }
 
 /* 200:273464 — same cream gradient and clipped grid as the intro's RM route,
    so the escalation card reads identically wherever it appears */

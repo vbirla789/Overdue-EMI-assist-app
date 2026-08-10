@@ -13,7 +13,7 @@ const F = {
   statusRight: '/figma/statusbar-right2.svg',
   rail: '/figma/check-rail.svg',
   tick: '/figma/check-tick.svg',
-  calBig: '/figma/cal-big.svg',
+  calBig: '/figma/ic-date.svg',
   sepDashed: '/figma/sep-dashed.svg',
   sepThin: '/figma/sep-thin.svg',
   iRm: '/figma/ic-rm.svg',
