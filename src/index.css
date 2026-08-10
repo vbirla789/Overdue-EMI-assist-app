@@ -230,6 +230,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   border: 1px solid #e3e3e3; border-radius: 20px; padding: 6px 16px;
   font-size: 16px; line-height: 1.4; letter-spacing: 0.25px; color: #000; white-space: nowrap;
 }
+/* shared between the pill and the reschedule header, so the name travels
+   with the sphere rather than reappearing in a new place */
+.nia-name { display: block; white-space: nowrap; }
 /* pointer + body is a compound shape, so the shadow has to follow the alpha
    outline — box-shadow would draw a rectangle around the pair */
 .in-tooltip {
@@ -472,7 +475,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fx-card:active { opacity: .82; }
 .fx-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
-.fx-card-icon { width: 40px; height: 40px; flex: none; overflow: hidden; display: block; }
+.fx-card-icon { width: 36px; height: 36px; flex: none; overflow: hidden; display: block; }
 .fx-card-icon img { width: 100%; height: 100%; object-fit: contain; }
 .fx-card-text { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; word-break: break-word; }
 .fx-chev { width: 20px; height: 20px; flex: none; position: relative; overflow: hidden; display: block; }

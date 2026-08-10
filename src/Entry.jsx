@@ -112,7 +112,10 @@ export function NiaHero({ animate = true }) {
         <img src={A.orb} alt="" />
       </motion.div>
       <motion.div className="in-id" layout>
-        <motion.span className="in-pill" variants={animate ? fadeItem : undefined}>Nia AI</motion.span>
+        {/* the pill chrome cross-fades, the words themselves travel */}
+        <motion.span className="in-pill" variants={animate ? fadeItem : undefined}>
+          <motion.span layoutId="nia-name" className="nia-name">Nia AI</motion.span>
+        </motion.span>
         <motion.div className="in-tooltip" variants={animate ? fadeItem : undefined}>
           <img className="in-pointer" src={A.pointer} alt="" />
           <div className="in-tip-body">

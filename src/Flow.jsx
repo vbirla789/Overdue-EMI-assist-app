@@ -235,7 +235,7 @@ export function Reschedule({ go, onPick, onClose }) {
             <div className="fx-agent-row">
               <motion.div className="fx-orb-40" layoutId="nia-orb"><img src={F.orb} alt="" /></motion.div>
               <div className="fx-agent-name">
-                <span className="fx-title-16">Nia AI</span>
+                <motion.span layoutId="nia-name" className="fx-title-16 nia-name">Nia AI</motion.span>
                 <span className="fx-sub-14">Move the date</span>
               </div>
             </div>
