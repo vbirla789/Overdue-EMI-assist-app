@@ -16,7 +16,8 @@ const F = {
   calBig: '/figma/cal-big.svg',
   sepDashed: '/figma/sep-dashed.svg',
   sepThin: '/figma/sep-thin.svg',
-  iRm: '/figma/i-rm2.svg',
+  iRm: '/figma/ic-rm.svg',
+  gridCream: '/figma/grid-cream.svg',
   chevron: '/figma/chevron3.svg',
   avatar: '/figma/rm-avatar.png',
   sepChat: '/figma/sep-chat.svg',
@@ -264,6 +265,7 @@ export function Reschedule({ go, onPick, onClose }) {
             </motion.div>
 
             <motion.button className="fx-card" onClick={() => go('agent')} variants={riseItem} {...tap}>
+              <span className="fx-card-grid"><img src={F.gridCream} alt="" /></span>
               <span className="fx-card-main">
                 <span className="fx-card-icon"><img src={F.iRm} alt="" /></span>
                 <span className="fx-card-text">

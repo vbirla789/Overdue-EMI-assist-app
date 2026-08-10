@@ -496,10 +496,23 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 .fx-or img { flex: 1 0 0; min-width: 0; height: 1.17px; }
 .fx-or .fx-sub-14 { white-space: nowrap; }
 
+/* 200:273464 — same cream gradient and clipped grid as the intro's RM route,
+   so the escalation card reads identically wherever it appears */
 .fx-card {
-  background: #fff; border-radius: 4px; padding: 12px 8px; width: 100%;
+  background: linear-gradient(163.81deg, #ffffff 3.26%, #fef8ec 107.48%);
+  border-radius: 4px; padding: 12px 8px; width: 100%;
   display: flex; gap: 12px; align-items: center; justify-content: center; text-align: left;
-  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12);
+  position: relative; overflow: hidden; isolation: isolate;
+}
+.fx-card-grid {
+  position: absolute; bottom: -68px; right: -40px; width: 294.5px; height: 170.03px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; z-index: -1;
+}
+.fx-card-grid img {
+  width: 167.42px; height: 172.64px; flex: none; display: block;
+  transform: rotate(30deg) skewX(-30deg) scaleY(0.87);
 }
 .fx-card:active { opacity: .82; }
 .fx-card-main { flex: 1 0 0; min-width: 0; display: flex; gap: 12px; align-items: center; }
