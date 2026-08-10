@@ -20,34 +20,45 @@ function marbleTexture() {
   c.height = 512
   const x = c.getContext('2d')
 
-  x.fillStyle = '#f8fafd'
+  x.fillStyle = '#f7f9fd'
   x.fillRect(0, 0, 1024, 512)
 
-  /* the main navy band, drawn twice at the seam so it tiles cleanly */
-  x.filter = 'blur(46px)'
-  for (const shift of [-1024, 0, 1024]) {
-    const g = x.createLinearGradient(shift + 120, 90, shift + 900, 430)
-    g.addColorStop(0, 'rgba(74, 88, 122, 0)')
-    g.addColorStop(0.30, 'rgba(66, 80, 116, 0.42)')
-    g.addColorStop(0.50, 'rgba(45, 57, 90, 0.66)')
-    g.addColorStop(0.72, 'rgba(74, 88, 122, 0.22)')
-    g.addColorStop(1, 'rgba(74, 88, 122, 0)')
-    x.fillStyle = g
-    x.beginPath()
-    x.ellipse(shift + 512, 268, 460, 84, -0.30, 0, Math.PI * 2)
-    x.fill()
+  /* Localised swirls rather than one band wrapping the whole sphere. A
+     full-width band looks identical at every angle, so the rotation was
+     running but invisible — discrete features give it something to carry. */
+  const swirls = [
+    { u: 0.18, v: 0.52, rx: 250, ry: 92, rot: -0.34, a: 0.72 },
+    { u: 0.52, v: 0.42, rx: 190, ry: 70, rot: 0.28, a: 0.55 },
+    { u: 0.80, v: 0.58, rx: 220, ry: 60, rot: -0.16, a: 0.44 },
+  ]
+
+  x.filter = 'blur(38px)'
+  for (const s of swirls) {
+    for (const shift of [-1024, 0, 1024]) {
+      const cx = shift + s.u * 1024
+      const cy = s.v * 512
+      const g = x.createLinearGradient(cx - s.rx, cy - s.ry, cx + s.rx, cy + s.ry)
+      g.addColorStop(0, 'rgba(88, 102, 138, 0)')
+      g.addColorStop(0.34, `rgba(62, 76, 112, ${s.a * 0.62})`)
+      g.addColorStop(0.52, `rgba(38, 49, 82, ${s.a})`)
+      g.addColorStop(0.74, `rgba(74, 88, 124, ${s.a * 0.38})`)
+      g.addColorStop(1, 'rgba(88, 102, 138, 0)')
+      x.fillStyle = g
+      x.beginPath()
+      x.ellipse(cx, cy, s.rx, s.ry, s.rot, 0, Math.PI * 2)
+      x.fill()
+    }
   }
 
-  /* a paler wisp crossing it, so the surface has more than one gesture */
-  for (const shift of [-1024, 0, 1024]) {
-    const g2 = x.createLinearGradient(shift + 200, 380, shift + 850, 120)
-    g2.addColorStop(0, 'rgba(120, 134, 168, 0)')
-    g2.addColorStop(0.5, 'rgba(120, 134, 168, 0.20)')
-    g2.addColorStop(1, 'rgba(120, 134, 168, 0)')
-    x.fillStyle = g2
-    x.beginPath()
-    x.ellipse(shift + 512, 300, 420, 66, 0.2, 0, Math.PI * 2)
-    x.fill()
+  /* pale highlights between the swirls keep it reading as marble */
+  x.filter = 'blur(52px)'
+  for (const u of [0.35, 0.68, 0.95]) {
+    for (const shift of [-1024, 0, 1024]) {
+      x.fillStyle = 'rgba(255, 255, 255, 0.85)'
+      x.beginPath()
+      x.ellipse(shift + u * 1024, 190, 180, 96, 0.3, 0, Math.PI * 2)
+      x.fill()
+    }
   }
   x.filter = 'none'
 
@@ -64,7 +75,9 @@ function marbleTexture() {
   return cache
 }
 
-export default function Sphere3D({ size = 128, speed = 0.0022 }) {
+/* degrees per second — frame-rate independent, so a 120Hz display doesn't
+   spin it twice as fast as a 60Hz one */
+export default function Sphere3D({ size = 128, degPerSec = 34 }) {
   const host = useRef(null)
 
   useEffect(() => {
@@ -72,7 +85,11 @@ export default function Sphere3D({ size = 128, speed = 0.0022 }) {
     if (!el) return
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+    /* preserveDrawingBuffer keeps the last frame readable, so the sphere shows
+       up in canvas-based screenshots instead of coming out blank */
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true, antialias: true, preserveDrawingBuffer: true,
+    })
     renderer.setPixelRatio(dpr)
     renderer.setSize(size, size, false)
     renderer.domElement.style.width = '100%'
@@ -120,15 +137,19 @@ export default function Sphere3D({ size = 128, speed = 0.0022 }) {
     material.envMap = env
     material.needsUpdate = true
 
-    const frame = () => {
+    const rate = (degPerSec * Math.PI) / 180
+    let last = performance.now()
+    const frame = (now) => {
       if (!live) return
+      const dt = Math.min((now - last) / 1000, 0.05)
+      last = now
       if (visible) {
-        if (!still) sphere.rotation.y += speed
+        if (!still) sphere.rotation.y += rate * dt
         renderer.render(scene, camera)
       }
       raf = requestAnimationFrame(frame)
     }
-    frame()
+    raf = requestAnimationFrame(frame)
 
     return () => {
       live = false
@@ -139,7 +160,7 @@ export default function Sphere3D({ size = 128, speed = 0.0022 }) {
       renderer.dispose()
       if (renderer.domElement.parentNode === el) el.removeChild(renderer.domElement)
     }
-  }, [size, speed])
+  }, [size, degPerSec])
 
   return <div ref={host} className="sphere3d" style={{ width: '100%', height: '100%' }} />
 }
