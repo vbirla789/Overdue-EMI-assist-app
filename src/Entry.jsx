@@ -22,9 +22,12 @@ const A = {
   chevron2: '/figma/chevron2.svg',
   separator2: '/figma/separator2.svg',
   pointer: '/figma/pointer.svg',
-  iPay: '/figma/i-pay.svg',
-  iDate: '/figma/i-date.svg',
-  iRm: '/figma/i-rm.svg',
+  iPay: '/figma/ic-pay.svg',
+  iDate: '/figma/ic-date.svg',
+  iRm: '/figma/ic-rm.svg',
+  gridMint: '/figma/grid-mint.svg',
+  gridBlue: '/figma/grid-blue.svg',
+  gridCream: '/figma/grid-cream.svg',
 }
 
 /* The backdrop never changes, so the image is blurred once rather than
@@ -66,19 +69,26 @@ export function Toast({ onOpen }) {
 }
 
 /* ---------- 166:3429 — full-screen intro ---------- */
+/* Each card carries its own gradient and a grid vector clipped by the card
+   edge — mint for pay, blue for reschedule, cream for the RM route. */
 const INTRO_OPTIONS = [
-  { icon: A.iPay, t: 'Pay ₹45,000', d: 'Clears this month. No late fee.', go: 'success' },
-  { icon: A.iDate, t: 'Move the date', d: 'Up to 5 days. Still no late fee.', go: 'loading' },
-  { icon: A.iRm, t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'agent' },
+  { icon: A.iPay, grid: A.gridMint, tone: 'mint',
+    t: 'Pay ₹45,000', d: 'Clears this month. No late fee.', go: 'success' },
+  { icon: A.iDate, grid: A.gridBlue, tone: 'blue',
+    t: 'Move the date', d: 'Up to 5 days. Still no late fee.', go: 'loading' },
+  { icon: A.iRm, grid: A.gridCream, tone: 'cream',
+    t: 'Connect to your RM', d: 'For anything longer than 5 days', go: 'agent' },
 ]
 
 /* The first two options sit side by side with the icon stacked above the
    text; the RM route stays full width with a chevron, so the layout says
    it is a different kind of thing before the copy does. */
 function IntroCard({ o, go, stacked }) {
+  const grid = <span className={`in-card-grid ${stacked ? '' : 'wide'}`}><img src={o.grid} alt="" /></span>
   if (stacked) {
     return (
-      <motion.button className="in-card stacked" onClick={() => go(o.go)} variants={riseItem} {...tap}>
+      <motion.button className={`in-card stacked ${o.tone}`} onClick={() => go(o.go)} variants={riseItem} {...tap}>
+        {grid}
         <span className="in-card-stack">
           <span className="in-card-icon"><img src={o.icon} alt="" /></span>
           <span className="in-card-text">
@@ -90,7 +100,8 @@ function IntroCard({ o, go, stacked }) {
     )
   }
   return (
-    <motion.button className="in-card" onClick={() => go(o.go)} variants={riseItem} {...tap}>
+    <motion.button className={`in-card ${o.tone}`} onClick={() => go(o.go)} variants={riseItem} {...tap}>
+      {grid}
       <span className="in-card-main">
         <span className="in-card-icon"><img src={o.icon} alt="" /></span>
         <span className="in-card-text">

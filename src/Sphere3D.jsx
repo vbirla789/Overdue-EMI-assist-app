@@ -44,12 +44,15 @@ const FRAG = `
   }
 
   void main() {
-    /* pale glass shell, with the ink running dark blue into purple */
-    vec3 glass  = vec3(0.957, 0.965, 0.980);
-    vec3 cool   = vec3(0.867, 0.882, 0.914);
-    vec3 blue   = vec3(0.231, 0.310, 0.561);
-    vec3 purple = vec3(0.290, 0.231, 0.490);
-    vec3 deep   = vec3(0.129, 0.145, 0.298);
+    /* Pale glass shell. The ink is sampled from the references — a bright
+       cornflower blue running into lilac and violet, with a deeper indigo
+       where the sheets stack. */
+    vec3 glass  = vec3(0.965, 0.972, 0.988);
+    vec3 cool   = vec3(0.886, 0.898, 0.937);
+    vec3 blue   = vec3(0.290, 0.545, 0.980);
+    vec3 lilac  = vec3(0.639, 0.573, 0.945);
+    vec3 violet = vec3(0.478, 0.373, 0.878);
+    vec3 deep   = vec3(0.286, 0.220, 0.639);
 
     float up = clamp(vN.y * 0.5 + 0.5, 0.0, 1.0);
     vec3 col = mix(cool, glass, smoothstep(0.10, 0.85, up));
@@ -63,12 +66,15 @@ const FRAG = `
     /* fades toward the silhouette, as if seen through the curve of the glass */
     ink *= 0.38 + 0.62 * max(dot(vN, vView), 0.0);
 
-    /* blue on one flank, purple on the other, so both shades read */
-    float hue = clamp(0.5 + 0.5 * sin(vObj.x * 1.6 + vObj.z * 1.1 + uTime * 0.13), 0.0, 1.0);
-    vec3 tint = mix(blue, purple, hue);
+    /* the hue sweeps blue → lilac → violet across the sphere and drifts, so
+       both shades are always present and neither settles in one place */
+    float hue = clamp(0.5 + 0.5 * sin(vObj.x * 1.5 + vObj.z * 1.1 + uTime * 0.14), 0.0, 1.0);
+    vec3 tint = hue < 0.5
+      ? mix(blue, lilac, hue * 2.0)
+      : mix(lilac, violet, (hue - 0.5) * 2.0);
 
-    col = mix(col, tint, ink * 0.86);
-    col = mix(col, deep, pow(ink, 2.3) * 0.62);
+    col = mix(col, tint, ink * 0.90);
+    col = mix(col, deep, pow(ink, 2.4) * 0.52);
 
     vec3 L = normalize(vec3(-0.40, 0.82, 0.76));
     vec3 H = normalize(L + vView);
