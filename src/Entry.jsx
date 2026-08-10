@@ -93,34 +93,52 @@ function IntroCard({ o, go, stacked }) {
 /* Shared across the intro and the loading state. The orb carries a layoutId
    so Framer treats it as one element travelling between screens — it holds
    still from intro to loading, then shrinks into the reschedule header. */
-export function NiaHero({ animate = true, tooltip = true }) {
+/* Animates on explicit props rather than inherited variants. The hero mounts
+   once and never unmounts, so these run on load only — and nothing here can
+   get stranded at its initial state if a parent stops propagating a label. */
+export function NiaHero({ tooltip = true }) {
+  const EASE = [0.22, 0.61, 0.36, 1]
   return (
-    <motion.div className="in-hero">
-      <motion.div className="in-orb" layoutId="nia-orb" variants={animate ? orbIn : undefined}>
+    <div className="in-hero">
+      <motion.div
+        className="in-orb" layoutId="nia-orb"
+        initial={{ opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: EASE }}
+      >
         <Sphere3D size={128} />
       </motion.div>
-      <motion.div className="in-id" layout>
+      <div className="in-id">
         {/* the pill chrome cross-fades, the words themselves travel */}
-        <motion.span className="in-pill" variants={animate ? fadeItem : undefined}>
+        <motion.span
+          className="in-pill"
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32, ease: EASE, delay: 0.12 }}
+        >
           <motion.span layoutId="nia-name" className="nia-name">Nia AI</motion.span>
         </motion.span>
-        {/* the picker drops the status line — by then the user is choosing a
-            date, not being told what's wrong */}
-        {tooltip && (
-          <motion.div className="in-tooltip" variants={animate ? fadeItem : undefined}>
-            <img className="in-pointer" src={A.pointer} alt="" />
-            <div className="in-tip-body">
-              <span className="in-dot"><i /></span>
-              <span className="in-tip-text">Your installment is 3 days late</span>
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
-    </motion.div>
+        {/* The picker drops the status line, but the space it occupies is kept
+            so the hero never changes height — otherwise everything below it
+            jumps as the tooltip comes and goes. It fades rather than
+            unmounting. */}
+        <motion.div
+          className="in-tooltip"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: tooltip ? 1 : 0 }}
+          transition={{ duration: 0.28, ease: EASE, delay: tooltip ? 0.2 : 0 }}
+          style={{ pointerEvents: tooltip ? 'auto' : 'none' }}
+        >
+          <img className="in-pointer" src={A.pointer} alt="" />
+          <div className="in-tip-body">
+            <span className="in-dot"><i /></span>
+            <span className="in-tip-text">Your installment is 3 days late</span>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   )
 }
 
-export function IntroShell({ children, onBack, stagger: st }) {
+export function IntroShell({ children, onBack }) {
   return (
     <div className="in dotgrid">
       <div className="in-header">
@@ -136,7 +154,14 @@ export function IntroShell({ children, onBack, stagger: st }) {
           <img className="fig-sep" src={A.separator2} alt="" />
         </div>
       </div>
-      <motion.div className="in-body" initial="initial" animate="animate" {...st}>
+      {/* layout animates the height change as the block below the hero swaps,
+          so the surrounding space eases instead of snapping.
+
+          No initial/animate variant labels here: a label on this element is
+          propagated to every motion descendant and overrides their own props,
+          which left the sphere, the pill and the tooltip stranded at their
+          initial values. Each descendant animates itself instead. */}
+      <motion.div className="in-body" layout>
         {children}
       </motion.div>
       <div className="in-homebar"><i /></div>

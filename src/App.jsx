@@ -8,10 +8,10 @@ const SHARED = new Set(['intro', 'loading', 'loading:3', 'resched'])
 
 /* only the block under the hero moves */
 const bodySwap = {
-  initial: { opacity: 0, y: 10 },
+  initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.26, ease: [0.22, 0.61, 0.36, 1] },
+  exit: { opacity: 0, y: -10 },
+  transition: { duration: 0.3, ease: [0.22, 0.61, 0.36, 1] },
 }
 import Part1 from './Part1'
 import Part2 from './Part2'
@@ -117,7 +117,10 @@ export default function App() {
         {SHARED.has(screen) ? (
           <IntroShell onBack={() => setScreen('intro')}>
             <NiaHero tooltip={screen !== 'resched'} />
-            <AnimatePresence mode="wait" initial={false}>
+            {/* popLayout takes the outgoing block out of flow, so the container
+                never collapses to nothing between states — with mode="wait" the
+                gap between exit and enter caused the jump. */}
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.div className="in-swap" key={screen} {...bodySwap}>
                 {screen === 'intro' ? <IntroBody go={go} />
                   : screen === 'loading' ? <LoadingBody onDone={() => setScreen('resched')} />
