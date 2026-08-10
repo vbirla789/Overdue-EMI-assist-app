@@ -351,9 +351,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 }
 .fx-check-mark img { width: 20px; height: 20px; padding: 1.875px; }
 
-/* pending dot — Rectangle 28, 8px rounded square */
+/* pending dot — 8px circle */
 .fx-check-mark i {
-  width: 8px; height: 8px; border-radius: 2.5px; background: #ccd4e3;
+  width: 8px; height: 8px; border-radius: 50%; background: #ccd4e3;
   opacity: .6;
 }
 
