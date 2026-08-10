@@ -117,9 +117,9 @@ export default function App() {
               : screen === 'loading' ? <Loading key="run" onBack={() => setScreen('intro')} onDone={() => setScreen('resched')} />
               : screen === 'loading:3' ? <Loading key="done" step={3} onBack={() => setScreen('intro')} />
               : screen === 'resched' ? <Reschedule go={go} onClose={() => setScreen('intro')} onPick={(d) => { setMovedTo(d); setScreen('moved') }} />
-              : screen === 'agent' ? <Agent onClose={() => setScreen('toast')} />
-              : screen === 'success' ? <Success onClose={() => setScreen('toast')} />
-              : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('toast')} />
+              : screen === 'agent' ? <Agent onClose={() => setScreen('intro')} />
+              : screen === 'success' ? <Success onClose={() => setScreen('intro')} />
+              : screen === 'moved' ? <Success moved={movedTo ?? { label: '13 August' }} onClose={() => setScreen('intro')} />
               : screen === 'sheet' ? <Sheet go={go} />
               : isP2
                 ? <Part2 screen={screen.slice(3)} go={(s) => go(['home', 'assistant'].includes(s) ? s : 'p2:' + s)} />

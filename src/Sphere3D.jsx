@@ -11,11 +11,14 @@ import * as THREE from 'three'
    and the loop pauses when the tab is hidden. */
 
 const VERT = `
-  varying vec2 vUv;
+  varying vec3 vObj;
   varying vec3 vN;
   varying vec3 vView;
   void main() {
-    vUv = uv;
+    /* object-space position, so the pattern is built from a continuous field
+       on the sphere instead of from UVs — UVs have a seam at the wrap, which
+       is what produced the hard vertical line down the middle */
+    vObj = normalize(position);
     vN = normalize(normalMatrix * normal);
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     vView = normalize(-mv.xyz);
@@ -26,43 +29,46 @@ const VERT = `
 const FRAG = `
   precision highp float;
   uniform float uTime;
-  varying vec2 vUv;
+  varying vec3 vObj;
   varying vec3 vN;
   varying vec3 vView;
 
-  /* one soft diagonal sheet of ink, fully feathered so it has no edge */
-  float sheet(vec2 uv, float phase, float thick, float tilt) {
-    float y = 0.50
-      + tilt * (uv.x - 0.5)
-      + 0.085 * sin(uv.x * 6.2831 + phase)
-      + 0.032 * sin(uv.x * 12.566 - phase * 0.7);
-    return smoothstep(thick, 0.0, abs(uv.y - y));
+  /* One soft sheet of ink, defined on the sphere itself. The height is taken
+     along a tilted axis and warped by sines of the object-space position, so
+     the whole field is continuous — no wrap, therefore no seam. */
+  float sheet(vec3 p, float phase, float thick, float tilt, float freq) {
+    float h = p.y * cos(tilt) - p.x * sin(tilt);
+    float warp = 0.16 * sin(p.x * freq + p.z * freq * 0.7 + phase)
+               + 0.07 * sin(p.z * freq * 1.6 - p.y * freq * 0.5 - phase * 0.8);
+    return smoothstep(thick, 0.0, abs(h - warp));
   }
 
   void main() {
-    /* Near-white glass shell. The body is kept very light so the swirl reads
-       as something suspended inside rather than painted on the surface. */
-    vec3 glass = vec3(0.961, 0.968, 0.980);
-    vec3 cool  = vec3(0.874, 0.890, 0.918);
-    vec3 slate = vec3(0.478, 0.510, 0.596);
-    vec3 navy  = vec3(0.216, 0.243, 0.337);
+    /* pale glass shell, with the ink running dark blue into purple */
+    vec3 glass  = vec3(0.957, 0.965, 0.980);
+    vec3 cool   = vec3(0.867, 0.882, 0.914);
+    vec3 blue   = vec3(0.231, 0.310, 0.561);
+    vec3 purple = vec3(0.290, 0.231, 0.490);
+    vec3 deep   = vec3(0.129, 0.145, 0.298);
 
     float up = clamp(vN.y * 0.5 + 0.5, 0.0, 1.0);
     vec3 col = mix(cool, glass, smoothstep(0.10, 0.85, up));
 
-    /* The ink lives in UV space, so it travels with the surface as the mesh
-       turns — that rotation is what makes the sphere feel alive. Three
-       feathered sheets at different tilts; depth only where they overlap. */
-    float i1 = sheet(vUv,                     uTime * 0.30,       0.150, -0.26) * 0.62;
-    float i2 = sheet(vUv + vec2(0.0, 0.052),  uTime * 0.23 + 1.8, 0.115, -0.32) * 0.50;
-    float i3 = sheet(vUv - vec2(0.0, 0.046),  uTime * 0.37 + 3.4, 0.088, -0.19) * 0.40;
+    /* three sheets at different tilts and rates; depth only where they stack */
+    float i1 = sheet(vObj, uTime * 0.28,       0.34, -0.42, 2.1) * 0.64;
+    float i2 = sheet(vObj, uTime * 0.21 + 1.8, 0.26, -0.56, 2.8) * 0.52;
+    float i3 = sheet(vObj, uTime * 0.34 + 3.4, 0.19, -0.28, 3.4) * 0.42;
     float ink = clamp(i1 + i2 + i3, 0.0, 1.0);
 
     /* fades toward the silhouette, as if seen through the curve of the glass */
-    ink *= 0.35 + 0.65 * max(dot(vN, vView), 0.0);
+    ink *= 0.38 + 0.62 * max(dot(vN, vView), 0.0);
 
-    col = mix(col, slate, ink * 0.88);
-    col = mix(col, navy, pow(ink, 2.1) * 0.86);
+    /* blue on one flank, purple on the other, so both shades read */
+    float hue = clamp(0.5 + 0.5 * sin(vObj.x * 1.6 + vObj.z * 1.1 + uTime * 0.13), 0.0, 1.0);
+    vec3 tint = mix(blue, purple, hue);
+
+    col = mix(col, tint, ink * 0.86);
+    col = mix(col, deep, pow(ink, 2.3) * 0.62);
 
     vec3 L = normalize(vec3(-0.40, 0.82, 0.76));
     vec3 H = normalize(L + vView);
@@ -77,7 +83,7 @@ const FRAG = `
 
     /* thin bright rim — the giveaway of a glass edge */
     float fres = pow(1.0 - max(dot(vN, vView), 0.0), 3.0);
-    col = mix(col, vec3(1.0), fres * 0.72);
+    col = mix(col, vec3(1.0), fres * 0.70);
 
     gl_FragColor = vec4(col, 1.0);
   }
